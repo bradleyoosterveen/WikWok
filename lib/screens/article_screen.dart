@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wikwok/cubits/article_cubit.dart';
+import 'package:wikwok/cubits/save_article_cubit.dart';
+import 'package:wikwok/models/article.dart';
 import 'package:wikwok/widgets/banner.dart';
 import 'package:wikwok/widgets/button/icon_button.dart';
 
@@ -26,24 +28,51 @@ class _ArticleScreenState extends State<ArticleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _body(),
+    final article =
+        context.watch<ArticleCubit>().getArticleByIndex(widget.index);
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => SaveArticleCubit()),
+      ],
+      child: Scaffold(
+        body: AnimatedSwitcher(
+          duration: const Duration(
+            milliseconds: 300,
+          ),
+          child: article != null
+              ? _View(article: article, index: widget.index)
+              : const Center(child: CircularProgressIndicator()),
+        ),
+      ),
     );
   }
+}
 
-  Widget _body() {
-    final article = context.watch<ArticleCubit>().getArticle(widget.index);
+class _View extends StatefulWidget {
+  const _View({
+    required this.article,
+    required this.index,
+  });
 
-    return AnimatedSwitcher(
-      duration: const Duration(
-        milliseconds: 300,
-      ),
-      child: article == null
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : _content(article),
-    );
+  final Article article;
+  final int index;
+
+  @override
+  State<_View> createState() => _ViewState();
+}
+
+class _ViewState extends State<_View> {
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<SaveArticleCubit>().get(widget.article.title);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _content(widget.article);
   }
 
   Widget _content(
@@ -96,40 +125,46 @@ class _ArticleScreenState extends State<ArticleScreen> {
                   ),
                   Column(
                     children: [
-                      const WikWokIconButton(
-                        icon: Icons.more_vert,
-                        label: 'More',
-                      ),
-                      const WikWokIconButton(
-                        icon: Icons.bookmark_border,
-                        label: 'Save',
+                      BlocBuilder<SaveArticleCubit, bool?>(
+                        builder: (context, state) => switch (state) {
+                          true => WikWokIconButton(
+                              icon: Icons.bookmark,
+                              label: 'Saved',
+                              onPressed: () => context
+                                  .read<SaveArticleCubit>()
+                                  .unsave(article.title),
+                            ),
+                          false => WikWokIconButton(
+                              icon: Icons.bookmark_outline,
+                              label: 'Save',
+                              onPressed: () => context
+                                  .read<SaveArticleCubit>()
+                                  .save(article.title),
+                            ),
+                          _ => const SizedBox.shrink(),
+                        },
                       ),
                       WikWokIconButton(
                         icon: Icons.share,
                         label: 'Share',
                         onPressed: () {
-                          context.read<ArticleCubit>().copyToClipboard(context, widget.index);
+                          context
+                              .read<ArticleCubit>()
+                              .copyToClipboard(context, article.title);
                         },
                       ),
                       WikWokIconButton(
                         icon: Icons.open_in_new,
                         label: 'Open',
                         onPressed: () {
-                          context.read<ArticleCubit>().openUrl(context, widget.index);
+                          context
+                              .read<ArticleCubit>()
+                              .openUrl(context, article.title);
                         },
                       ),
                     ],
                   ),
                 ],
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 24,
-                ),
-                child: Icon(
-                  Icons.swipe_up,
-                  size: 24,
-                ),
               ),
             ],
           ),

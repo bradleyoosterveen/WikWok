@@ -39,6 +39,8 @@ dependencies:
   dio: ^5.8.0+1
   flutter_bloc: ^9.0.0
   url_launcher: ^6.3.1
+  shared_preferences: ^2.5.3
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:

@@ -92,7 +92,7 @@ class _ViewState extends State<_View> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Flexible(
+                  Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Column(

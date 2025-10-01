@@ -1,0 +1,31 @@
+name: Enhancement
+description: Suggest an idea
+title: "Enhancement: "
+labels: [enhancement]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill in the fields below to suggest an enhancement to the project.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: Describe the enhancement you are suggesting
+    validations:
+      required: true
+  - type: textarea
+    id: justification
+    attributes:
+      label: Justification
+      placeholder: Explain why this enhancement is needed
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Criteria
+      placeholder: Describe the criteria that must be met for this enhancement to be considered complete
+    validations:
+      required: true

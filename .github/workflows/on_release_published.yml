@@ -1,0 +1,56 @@
+name: On release published
+
+on:
+  release:
+    types: [ published, edited ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.35.5
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: '📦 Build apk'
+        run: |
+          flutter build apk
+          mv build/app/outputs/flutter-apk/app-release.apk .
+          mv app-release.apk wikwok.apk
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: apk
+          path: wikwok.apk
+
+  upload-to-release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: apk
+
+      - name: Upload APK to release
+        run: |
+          gh release upload ${{github.event.release.tag_name}} wikwok.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash

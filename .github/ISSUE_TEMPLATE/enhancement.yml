@@ -13,15 +13,11 @@ body:
     attributes:
       label: Description
       placeholder: Describe the enhancement you are suggesting
-    validations:
-      required: true
   - type: textarea
     id: justification
     attributes:
       label: Justification
       placeholder: Explain why this enhancement is needed
-    validations:
-      required: true
   - type: textarea
     id: criteria
     attributes:

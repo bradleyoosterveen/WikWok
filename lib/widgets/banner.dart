@@ -25,7 +25,7 @@ class WikWokBanner extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF101212).withOpacity(0.76),
+                  const Color(0xFF101212).withValues(alpha: 0.76),
                   Colors.transparent,
                   Colors.transparent,
                   const Color(0xFF101212),

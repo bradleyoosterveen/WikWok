@@ -101,10 +101,12 @@ class _ViewState extends State<_View> {
                         children: [
                           Text(
                             article.subtitle,
-                            style:
-                                Theme.of(context).textTheme.labelMedium?.apply(
-                                      color: Colors.white.withOpacity(0.76),
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.apply(
+                                  color: Colors.white.withValues(alpha: 0.76),
+                                ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),

@@ -38,7 +38,7 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                               'Saved articles',
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
-                            Spacer(),
+                            const Spacer(),
                             WikWokIconButton(
                               icon: Icons.delete_sweep,
                               label: 'Purge',

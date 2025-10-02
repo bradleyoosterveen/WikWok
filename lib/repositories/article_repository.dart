@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class ArticleRepository {
       article = await _fetchRandomArticle();
 
       if (context.mounted) {
-        precacheImage(NetworkImage(article.image), context);
+        precacheImage(CachedNetworkImageProvider(article.image), context);
       }
 
       _articles[currentIndex] = article;
@@ -60,7 +61,7 @@ class ArticleRepository {
       _articles[nextIndex] = nextArticle;
 
       if (context.mounted) {
-        precacheImage(NetworkImage(nextArticle.image), context);
+        precacheImage(CachedNetworkImageProvider(nextArticle.image), context);
       }
     }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -30,12 +32,10 @@ class ArticleRepository {
         (article) => article.title == title,
       );
 
-  Future<Article?> prefetch(BuildContext context, int currentIndex) async {
-    late final Article article;
+  Future<Article?> fetch(BuildContext context, int currentIndex) async {
+    Article? article = _articles[currentIndex];
 
-    if (_articles.containsKey(currentIndex)) {
-      article = _articles[currentIndex]!;
-    } else {
+    if (article == null) {
       article = await _fetchRandomArticle();
 
       if (context.mounted) {
@@ -45,6 +45,13 @@ class ArticleRepository {
       _articles[currentIndex] = article;
     }
 
+    // ignore: use_build_context_synchronously
+    unawaited(_fetchNextArticle(context, currentIndex));
+
+    return article;
+  }
+
+  Future<void> _fetchNextArticle(BuildContext context, int currentIndex) async {
     final nextIndex = currentIndex + 1;
 
     if (!_articles.containsKey(nextIndex)) {
@@ -60,8 +67,6 @@ class ArticleRepository {
     if (_articles.length > _maxCache) {
       _articles.remove(_articles.keys.first);
     }
-
-    return getArticleByIndex(currentIndex);
   }
 
   Future<bool> isArticleSaved(String title) async {

@@ -13,8 +13,8 @@ class ArticleCubit extends Cubit<Article?> {
   Article? getArticleByIndex(int index) =>
       _articleRepository.getArticleByIndex(index);
 
-  Future<void> prefetch(BuildContext context, int currentIndex) async {
-    final newArticle = await _articleRepository.prefetch(context, currentIndex);
+  Future<void> fetch(BuildContext context, int currentIndex) async {
+    final newArticle = await _articleRepository.fetch(context, currentIndex);
 
     emit(newArticle);
   }

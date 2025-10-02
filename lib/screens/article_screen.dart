@@ -22,28 +22,17 @@ class _ArticleScreenState extends State<ArticleScreen> {
   @override
   void initState() {
     super.initState();
-
-    context.read<ArticleCubit>().prefetch(context, widget.index);
   }
 
   @override
   Widget build(BuildContext context) {
-    final article =
-        context.watch<ArticleCubit>().getArticleByIndex(widget.index);
-
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => ArticleCubit()),
         BlocProvider(create: (context) => SaveArticleCubit()),
       ],
       child: Scaffold(
-        body: AnimatedSwitcher(
-          duration: const Duration(
-            milliseconds: 300,
-          ),
-          child: article != null
-              ? _View(article: article, index: widget.index)
-              : const Center(child: CircularProgressIndicator()),
-        ),
+        body: _View(index: widget.index),
       ),
     );
   }
@@ -51,11 +40,9 @@ class _ArticleScreenState extends State<ArticleScreen> {
 
 class _View extends StatefulWidget {
   const _View({
-    required this.article,
     required this.index,
   });
 
-  final Article article;
   final int index;
 
   @override
@@ -67,12 +54,19 @@ class _ViewState extends State<_View> {
   void initState() {
     super.initState();
 
-    context.read<SaveArticleCubit>().get(widget.article.title);
+    context.read<ArticleCubit>().fetch(context, widget.index);
   }
 
   @override
   Widget build(BuildContext context) {
-    return _content(widget.article);
+    return BlocBuilder<ArticleCubit, Article?>(
+        builder: (context, state) => AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: switch (state) {
+                Article article => _content(article),
+                _ => const Center(child: CircularProgressIndicator()),
+              },
+            ));
   }
 
   Widget _content(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class WikWokBanner extends StatelessWidget {
@@ -13,9 +14,16 @@ class WikWokBanner extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image.network(
-            src,
+          child: CachedNetworkImage(
+            fadeInDuration: const Duration(milliseconds: 300),
+            fadeOutDuration: const Duration(milliseconds: 300),
+            fadeInCurve: Curves.easeInOut,
+            fadeOutCurve: Curves.easeInOut,
+            imageUrl: src,
             fit: BoxFit.cover,
+            errorWidget: (context, url, error) => const Center(
+              child: Icon(Icons.error),
+            ),
           ),
         ),
         Positioned.fill(

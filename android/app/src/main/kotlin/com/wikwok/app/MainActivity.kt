@@ -1,4 +1,4 @@
-package com.example.wikwok
+package com.wikwok.app
 
 import io.flutter.embedding.android.FlutterActivity
 

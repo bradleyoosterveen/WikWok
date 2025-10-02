@@ -85,16 +85,16 @@ class _ViewState extends State<_View> {
             src: article.image,
           ),
         ),
-        SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -124,51 +124,52 @@ class _ViewState extends State<_View> {
                         ],
                       ),
                     ),
-                  ),
-                  Column(
-                    children: [
-                      BlocBuilder<SaveArticleCubit, bool?>(
-                        builder: (context, state) => switch (state) {
-                          true => WikWokIconButton(
-                              icon: Icons.bookmark,
-                              label: 'Saved',
-                              onPressed: () => context
-                                  .read<SaveArticleCubit>()
-                                  .unsave(article.title),
-                            ),
-                          false => WikWokIconButton(
-                              icon: Icons.bookmark_outline,
-                              label: 'Save',
-                              onPressed: () => context
-                                  .read<SaveArticleCubit>()
-                                  .save(article.title),
-                            ),
-                          _ => const SizedBox.shrink(),
-                        },
-                      ),
-                      WikWokIconButton(
-                        icon: Icons.share,
-                        label: 'Share',
-                        onPressed: () {
-                          context
-                              .read<ArticleCubit>()
-                              .copyToClipboard(context, article.title);
-                        },
-                      ),
-                      WikWokIconButton(
-                        icon: Icons.open_in_new,
-                        label: 'Open',
-                        onPressed: () {
-                          context
-                              .read<ArticleCubit>()
-                              .openUrl(context, article.title);
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(width: 12),
+                    Column(
+                      children: [
+                        BlocBuilder<SaveArticleCubit, bool?>(
+                          builder: (context, state) => switch (state) {
+                            true => WikWokIconButton(
+                                icon: Icons.bookmark,
+                                label: 'Saved',
+                                onPressed: () => context
+                                    .read<SaveArticleCubit>()
+                                    .unsave(article.title),
+                              ),
+                            false => WikWokIconButton(
+                                icon: Icons.bookmark_outline,
+                                label: 'Save',
+                                onPressed: () => context
+                                    .read<SaveArticleCubit>()
+                                    .save(article.title),
+                              ),
+                            _ => const SizedBox.shrink(),
+                          },
+                        ),
+                        WikWokIconButton(
+                          icon: Icons.share,
+                          label: 'Share',
+                          onPressed: () {
+                            context
+                                .read<ArticleCubit>()
+                                .copyToClipboard(context, article.title);
+                          },
+                        ),
+                        WikWokIconButton(
+                          icon: Icons.open_in_new,
+                          label: 'Open',
+                          onPressed: () {
+                            context
+                                .read<ArticleCubit>()
+                                .openUrl(context, article.title);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],

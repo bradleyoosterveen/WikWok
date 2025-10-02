@@ -7,6 +7,7 @@ import 'package:wikwok/cubits/article_cubit.dart';
 import 'package:wikwok/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/screens/article_screen.dart';
 import 'package:wikwok/screens/saved_articles_screen.dart';
+import 'package:wikwok/widgets/button/icon_button.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -18,67 +19,69 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: MaterialApp(
-        title: 'WikWok',
-        theme: ThemeData(
-          scaffoldBackgroundColor: const Color(0xFF101212),
-          useMaterial3: true,
-          textTheme: GoogleFonts.spectralTextTheme().apply(
-            bodyColor: Colors.white,
-            displayColor: Colors.white,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ArticleCubit()),
+        BlocProvider(create: (context) => SavedArticlesCubit()),
+      ],
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: MaterialApp(
+          title: 'WikWok',
+          theme: ThemeData(
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                for (var type in TargetPlatform.values)
+                  type: const CupertinoPageTransitionsBuilder(),
+              },
+            ),
+            scaffoldBackgroundColor: const Color(0xFF101212),
+            useMaterial3: true,
+            textTheme: GoogleFonts.spectralTextTheme().apply(
+              bodyColor: Colors.white,
+              displayColor: Colors.white,
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.white,
+              weight: 10,
+            ),
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              iconTheme: IconThemeData(
+                color: Colors.white,
+              ),
+            ),
           ),
-          iconTheme: const IconThemeData(
-            color: Colors.white,
-            weight: 10,
-          ),
-        ),
-        home: MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (context) => ArticleCubit()),
-            BlocProvider(create: (context) => SavedArticlesCubit()),
-          ],
-          child: Scaffold(
-            body: DefaultTabController(
-              length: 2,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        Stack(
-                          children: [
-                            PageView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (context, index) =>
-                                  ArticleScreen(index: index),
-                            ),
-                            const SafeArea(
-                              child: _Version(),
-                            ),
-                          ],
-                        ),
-                        const SavedArticlesScreen(),
-                      ],
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: DefaultTabController(
+                length: 2,
+                child: Stack(
+                  children: [
+                    PageView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) =>
+                          ArticleScreen(index: index),
                     ),
-                  ),
-                  const Material(
-                    color: Color(0xFF101212),
-                    child: SafeArea(
-                      top: false,
-                      child: TabBar(
-                        dividerHeight: 0,
-                        indicatorColor: Colors.transparent,
-                        tabs: <Widget>[
-                          Tab(icon: Icon(Icons.swipe_up)),
-                          Tab(icon: Icon(Icons.bookmarks_outlined)),
-                        ],
+                    const SafeArea(
+                      child: _Version(),
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: WikWokIconButton(
+                            icon: Icons.bookmarks_outlined,
+                            onPressed: () => Navigator.of(context)
+                                .push(SavedArticlesScreen.route()),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

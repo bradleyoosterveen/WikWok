@@ -8,6 +8,10 @@ import 'package:wikwok/widgets/button/icon_button.dart';
 class SavedArticlesScreen extends StatefulWidget {
   const SavedArticlesScreen({super.key});
 
+  static route() => MaterialPageRoute(
+        builder: (context) => const SavedArticlesScreen(),
+      );
+
   @override
   State<SavedArticlesScreen> createState() => _SavedArticlesScreenState();
 }
@@ -23,6 +27,18 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Saved articles',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        actions: [
+          WikWokIconButton(
+            icon: Icons.delete_sweep,
+            onPressed: () => context.read<SavedArticlesCubit>().unsaveAll(),
+          ),
+        ],
+      ),
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -32,56 +48,30 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
               child: BlocBuilder<SavedArticlesCubit, List<Article>?>(
                 builder: (context, state) => switch (state) {
                   List<Article> articles => articles.isNotEmpty
-                      ? Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Saved articles',
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                  const Spacer(),
-                                  WikWokIconButton(
-                                    icon: Icons.delete_sweep,
-                                    label: 'Purge',
-                                    onPressed: () => context
-                                        .read<SavedArticlesCubit>()
-                                        .unsaveAll(),
-                                  ),
-                                ],
+                      ? ListView.builder(
+                          itemCount: articles.length,
+                          itemBuilder: (context, index) => ListTile(
+                            onTap: () => context
+                                .read<ArticleCubit>()
+                                .openUrl(context, articles[index].title),
+                            leading: AspectRatio(
+                              aspectRatio: 1,
+                              child: Image.network(
+                                articles[index].image,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: articles.length,
-                                itemBuilder: (context, index) => ListTile(
-                                  onTap: () => context
-                                      .read<ArticleCubit>()
-                                      .openUrl(context, articles[index].title),
-                                  leading: AspectRatio(
-                                    aspectRatio: 1,
-                                    child: Image.network(
-                                      articles[index].image,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  textColor: Colors.white,
-                                  title: Text(articles[index].title),
-                                  subtitle: Text(articles[index].subtitle),
-                                  trailing: WikWokIconButton(
-                                    icon: Icons.delete,
-                                    label: 'Delete',
-                                    onPressed: () => context
-                                        .read<SavedArticlesCubit>()
-                                        .unsave(articles[index].title),
-                                  ),
-                                ),
-                              ),
+                            textColor: Colors.white,
+                            title: Text(articles[index].title),
+                            subtitle: Text(articles[index].subtitle),
+                            trailing: WikWokIconButton(
+                              icon: Icons.delete,
+                              label: 'Delete',
+                              onPressed: () => context
+                                  .read<SavedArticlesCubit>()
+                                  .unsave(articles[index].title),
                             ),
-                          ],
+                          ),
                         )
                       : Center(
                           child: Text(

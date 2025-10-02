@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:wikwok/cubits/article_cubit.dart';
 import 'package:wikwok/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/screens/article_screen.dart';
 import 'package:wikwok/screens/saved_articles_screen.dart';
@@ -21,7 +20,6 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ArticleCubit()),
         BlocProvider(create: (context) => SavedArticlesCubit()),
       ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(

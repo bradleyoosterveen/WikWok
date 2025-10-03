@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/cubits/article_cubit.dart';
 import 'package:wikwok/cubits/save_article_cubit.dart';
 import 'package:wikwok/models/article.dart';
@@ -154,11 +155,8 @@ class _ViewState extends State<_View> {
                             WikWokIconButton(
                               icon: Icons.open_in_new,
                               label: 'Open',
-                              onPressed: () {
-                                context
-                                    .read<ArticleCubit>()
-                                    .openUrl(context, article.title);
-                              },
+                              onPressed: () =>
+                                  launchUrl(Uri.parse(article.url)),
                             ),
                           ],
                         ),

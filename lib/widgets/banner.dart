@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class WikWokBanner extends StatelessWidget {
   const WikWokBanner({
     required this.src,
+    this.showGradient = true,
     super.key,
   });
 
   final String src;
+  final bool showGradient;
 
   double get _blur => 48;
 
@@ -34,23 +36,25 @@ class WikWokBanner extends StatelessWidget {
           Positioned.fill(
             child: _image(fit: BoxFit.contain),
           ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF101212).withValues(alpha: 0.76),
-                    Colors.transparent,
-                    Colors.transparent,
-                    const Color(0xFF101212),
-                  ],
-                  stops: const [0, 0.2, 0.6, 1],
+          if (showGradient) ...[
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0xFF101212).withValues(alpha: 0.76),
+                      Colors.transparent,
+                      Colors.transparent,
+                      const Color(0xFF101212),
+                    ],
+                    stops: const [0, 0.2, 0.6, 1],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

@@ -77,7 +77,7 @@ class _ViewState extends State<_View> {
           children: [
             Expanded(
               child: WikWokBanner(
-                src: article.image,
+                src: article.imageUrl,
               ),
             ),
             Padding(

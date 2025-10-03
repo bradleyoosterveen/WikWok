@@ -40,7 +40,7 @@ class ArticleRepository {
       article = await _fetchRandomArticle();
 
       if (context.mounted) {
-        precacheImage(CachedNetworkImageProvider(article.image), context);
+        precacheImage(CachedNetworkImageProvider(article.imageUrl), context);
       }
 
       _articles[currentIndex] = article;
@@ -61,7 +61,8 @@ class ArticleRepository {
       _articles[nextIndex] = nextArticle;
 
       if (context.mounted) {
-        precacheImage(CachedNetworkImageProvider(nextArticle.image), context);
+        precacheImage(
+            CachedNetworkImageProvider(nextArticle.imageUrl), context);
       }
     }
 
@@ -129,7 +130,7 @@ class ArticleRepository {
       subtitle: data['description'] as String,
       title: data['titles']['normalized'] as String,
       content: data['extract'] as String,
-      image: data['originalimage']['source'] as String,
+      imageUrl: data['originalimage']['source'] as String,
       url: data['content_urls']['mobile']['page'] as String,
     );
   }
@@ -147,7 +148,7 @@ class ArticleRepository {
           subtitle: data['description'] as String,
           title: data['titles']['normalized'] as String,
           content: data['extract'] as String,
-          image: data['originalimage']['source'] as String,
+          imageUrl: data['originalimage']['source'] as String,
           url: data['content_urls']['mobile']['page'] as String,
         );
       });

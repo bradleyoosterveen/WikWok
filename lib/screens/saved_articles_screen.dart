@@ -56,7 +56,7 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                             leading: AspectRatio(
                               aspectRatio: 1,
                               child: Image.network(
-                                articles[index].image,
+                                articles[index].imageUrl,
                                 fit: BoxFit.cover,
                               ),
                             ),

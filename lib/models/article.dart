@@ -3,7 +3,7 @@ class Article {
   final String subtitle;
   final String title;
   final String content;
-  final String image;
+  final String imageUrl;
   final String url;
 
   Article({
@@ -11,7 +11,7 @@ class Article {
     required this.subtitle,
     required this.title,
     required this.content,
-    required this.image,
+    required this.imageUrl,
     required this.url,
   });
 }

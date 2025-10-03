@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wikwok/cubits/article_cubit.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/models/article.dart';
 import 'package:wikwok/widgets/button/icon_button.dart';
@@ -51,9 +51,8 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                       ? ListView.builder(
                           itemCount: articles.length,
                           itemBuilder: (context, index) => ListTile(
-                            onTap: () => context
-                                .read<ArticleCubit>()
-                                .openUrl(context, articles[index].title),
+                            onTap: () =>
+                                launchUrl(Uri.parse(articles[index].url)),
                             leading: AspectRatio(
                               aspectRatio: 1,
                               child: Image.network(

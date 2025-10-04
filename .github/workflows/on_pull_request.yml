@@ -1,0 +1,44 @@
+name: On pull request
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.35.5
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: '🧪 Run tests'
+        run: flutter test lib/**/*_test.dart
+
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.35.5
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: '📄 Format code'
+        run: dart format -o none --set-exit-if-changed .
+
+      - name: '🛠️ Fix code'
+        run: dart fix --dry-run

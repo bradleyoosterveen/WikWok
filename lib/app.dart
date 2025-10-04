@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/cubits/saved_articles_cubit.dart';
+import 'package:wikwok/cubits/update_cubit.dart';
 import 'package:wikwok/screens/article_screen.dart';
 import 'package:wikwok/screens/saved_articles_screen.dart';
 import 'package:wikwok/widgets/button/icon_button.dart';
@@ -21,6 +23,10 @@ class _AppState extends State<App> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => SavedArticlesCubit()),
+        BlocProvider(
+          lazy: false,
+          create: (context) => UpdateCubit()..get(),
+        ),
       ],
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -65,19 +71,7 @@ class _AppState extends State<App> {
                     const SafeArea(
                       child: _Version(),
                     ),
-                    Positioned(
-                      right: 0,
-                      child: SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: WikWokIconButton(
-                            icon: Icons.bookmarks_outlined,
-                            onPressed: () => Navigator.of(context)
-                                .push(SavedArticlesScreen.route()),
-                          ),
-                        ),
-                      ),
-                    ),
+                    const _Actions(),
                   ],
                 ),
               ),
@@ -128,6 +122,46 @@ class _VersionState extends State<_Version> {
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: _show ? Text(_versionText) : null,
+      ),
+    );
+  }
+}
+
+class _Actions extends StatelessWidget {
+  const _Actions();
+
+  List<Widget> _actions(
+    BuildContext context, {
+    required UpdateState? updateState,
+  }) =>
+      [
+        if (updateState is UpdateAvailableState) ...[
+          WikWokIconButton(
+              icon: Icons.file_download,
+              label: updateState.version.toString(),
+              onPressed: () => launchUrl(Uri.parse(updateState.url))),
+        ],
+        WikWokIconButton(
+          icon: Icons.bookmarks_outlined,
+          onPressed: () =>
+              Navigator.of(context).push(SavedArticlesScreen.route()),
+        ),
+      ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      right: 0,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: _actions(
+              context,
+              updateState: context.watch<UpdateCubit>().state,
+            ),
+          ),
+        ),
       ),
     );
   }

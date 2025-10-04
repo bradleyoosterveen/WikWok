@@ -16,7 +16,7 @@ class _Case {
 
 void main() {
   group('Version', () {
-    test('isNewerThan', () {
+    test('isNewerThan()', () {
       final cases = <_Case>[
         _Case(
           version: Version.parse('1.0.0'),

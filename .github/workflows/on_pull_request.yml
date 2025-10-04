@@ -40,5 +40,5 @@ jobs:
       - name: '📄 Format code'
         run: dart format -o none --set-exit-if-changed .
 
-      - name: '📄 Format code'
+      - name: '🛠️ Fix code'
         run: dart fix --dry-run

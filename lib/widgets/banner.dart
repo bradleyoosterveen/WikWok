@@ -13,22 +13,20 @@ class WikWokBanner extends StatelessWidget {
   final String src;
   final bool showGradient;
 
-  double get _blur => 48;
+  double get _blur => 8;
+  double get _opacity => 0.16;
 
   @override
   Widget build(BuildContext context) {
     return ClipRect(
-      clipBehavior: Clip.hardEdge,
+      clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
           Positioned.fill(
-            child: Transform.scale(
-              scale: 2,
+            child: Opacity(
+              opacity: _opacity,
               child: ImageFiltered(
-                imageFilter: ImageFilter.blur(
-                  sigmaX: _blur,
-                  sigmaY: _blur,
-                ),
+                imageFilter: ImageFilter.blur(sigmaX: _blur, sigmaY: _blur),
                 child: _image(fit: BoxFit.cover),
               ),
             ),

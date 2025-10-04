@@ -3,8 +3,11 @@ class Version {
   final int minor;
   final int patch;
 
-  const Version(
-      {required this.major, required this.minor, required this.patch, flutter});
+  const Version({
+    required this.major,
+    required this.minor,
+    required this.patch,
+  });
 
   factory Version.parse(String version) => Version(
         major: int.parse(version.split('.')[0]),

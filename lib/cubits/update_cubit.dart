@@ -7,7 +7,7 @@ class UpdateCubit extends Cubit<UpdateState?> {
 
   final _versionRepository = VersionRepository();
 
-  Future<void> get() async {
+  Future get() async {
     final updateAvailable = await _versionRepository.isUpdateAvailable();
 
     if (!updateAvailable) return emit(const UpdateUnavailableState());

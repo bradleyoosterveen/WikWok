@@ -2,7 +2,7 @@ name: wikwok
 description: "Doomscroll your way to endless knowledge."
 publish_to: 'none'
 
-version: 1.2.4+12
+version: 0.2.4+12
 
 environment:
   sdk: ^3.5.1
@@ -21,6 +21,7 @@ dependencies:
   package_info_plus: ^9.0.0
   flutter_launcher_icons: ^0.14.4
   cached_network_image: ^3.4.1
+  forui: ^0.16.0
 
 dev_dependencies:
   flutter_test:

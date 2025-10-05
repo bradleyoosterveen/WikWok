@@ -50,7 +50,7 @@ void main() {
       ];
 
       for (final case_ in cases) {
-        test('${case_.version} isNewerThan ${case_.other}', () {
+        test('${case_.version} is newer than ${case_.other}', () {
           expect(
             case_.version.isNewerThan(case_.other),
             case_.expected,

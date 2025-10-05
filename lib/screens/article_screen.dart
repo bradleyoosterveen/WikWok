@@ -55,7 +55,7 @@ class _ViewState extends State<_View> {
   void initState() {
     super.initState();
 
-    context.read<ArticleCubit>().fetch(context, widget.index);
+    context.read<ArticleCubit>().fetch(widget.index);
   }
 
   @override
@@ -149,7 +149,7 @@ class _ViewState extends State<_View> {
                               onPressed: () {
                                 context
                                     .read<ArticleCubit>()
-                                    .copyToClipboard(context, article.title);
+                                    .copyToClipboard(article.title);
                               },
                             ),
                             WikWokIconButton(

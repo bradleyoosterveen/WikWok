@@ -128,14 +128,12 @@ class _ViewState extends State<_View> {
                               builder: (context, state) => switch (state) {
                                 true => WikWokIconButton(
                                     icon: Icons.bookmark,
-                                    label: 'Saved',
                                     onPressed: () => context
                                         .read<SaveArticleCubit>()
                                         .unsave(article.title),
                                   ),
                                 false => WikWokIconButton(
                                     icon: Icons.bookmark_outline,
-                                    label: 'Save',
                                     onPressed: () => context
                                         .read<SaveArticleCubit>()
                                         .save(article.title),
@@ -145,7 +143,6 @@ class _ViewState extends State<_View> {
                             ),
                             WikWokIconButton(
                               icon: Icons.share,
-                              label: 'Share',
                               onPressed: () {
                                 context
                                     .read<ArticleCubit>()
@@ -154,7 +151,6 @@ class _ViewState extends State<_View> {
                             ),
                             WikWokIconButton(
                               icon: Icons.open_in_new,
-                              label: 'Open',
                               onPressed: () =>
                                   launchUrl(Uri.parse(article.url)),
                             ),

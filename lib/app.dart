@@ -18,19 +18,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final theme = FThemes.zinc.dark;
 
-  final _pageController = PageController();
-
-  final ValueNotifier<double> _currentPage = ValueNotifier<double>(0);
-
-  @override
-  void initState() {
-    super.initState();
-
-    _pageController.addListener(() {
-      _currentPage.value = _pageController.page ?? 0.0;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -45,7 +32,14 @@ class _AppState extends State<App> {
         value: SystemUiOverlayStyle.light,
         child: MaterialApp(
           title: 'WikWok',
-          theme: theme.toApproximateMaterialTheme(),
+          theme: theme.toApproximateMaterialTheme().copyWith(
+                pageTransitionsTheme: PageTransitionsTheme(
+                  builders: {
+                    for (var platform in TargetPlatform.values)
+                      platform: const CupertinoPageTransitionsBuilder(),
+                  },
+                ),
+              ),
           builder: (_, child) => FAnimatedTheme(data: theme, child: child!),
           home: Builder(
             builder: (context) => FScaffold(
@@ -55,12 +49,9 @@ class _AppState extends State<App> {
                 child: Stack(
                   children: [
                     PageView.builder(
-                      controller: _pageController,
                       scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) => ArticleScreen(
-                        index: index,
-                        currentPageNotifier: _currentPage,
-                      ),
+                      itemBuilder: (context, index) =>
+                          ArticleScreen(index: index),
                     ),
                     Positioned(
                       child: Align(

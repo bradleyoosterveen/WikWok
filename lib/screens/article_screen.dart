@@ -69,35 +69,61 @@ class _View extends StatefulWidget {
 }
 
 class _ViewState extends State<_View> {
+  bool _hide = true;
+
   @override
   void initState() {
     super.initState();
 
     context.read<ArticleCubit>().fetch(widget.index);
+
+    widget.currentPageNotifier.addListener(_onPageNotifierChange);
+
+    _onPageNotifierChange();
   }
 
-  double _scrollValue(int index) {
-    double distance = (widget.currentPageNotifier.value - index).abs();
+  @override
+  void dispose() {
+    widget.currentPageNotifier.removeListener(_onPageNotifierChange);
 
-    return (1.0 - distance).clamp(0.0, 1.0);
+    super.dispose();
+  }
+
+  void _onPageNotifierChange() {
+    final value = _scrollValue();
+
+    if (value < 0.4 && value > -0.4) {
+      if (!_hide) return;
+
+      setState(() => _hide = false);
+    } else {
+      if (_hide) return;
+
+      setState(() => _hide = true);
+    }
+  }
+
+  double _scrollValue() {
+    double distance = (widget.currentPageNotifier.value - widget.index);
+
+    return distance.clamp(-1.0, 1.0);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: widget.currentPageNotifier,
-        builder: (context, value, child) => Opacity(
-              opacity: _scrollValue(widget.index),
-              child: BlocBuilder<ArticleCubit, Article?>(
-                builder: (context, state) => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: switch (state) {
-                    Article article => _content(article),
-                    _ => const Center(child: CircularProgressIndicator()),
-                  },
-                ),
-              ),
-            ));
+    return BlocBuilder<ArticleCubit, Article?>(
+      builder: (context, state) => AnimatedOpacity(
+        duration: const Duration(milliseconds: 300),
+        opacity: _hide ? 0.0 : 1.0,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: switch (state) {
+            Article article => _content(article),
+            _ => const Center(child: CircularProgressIndicator()),
+          },
+        ),
+      ),
+    );
   }
 
   Widget _content(Article article) => Column(

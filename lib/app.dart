@@ -41,7 +41,7 @@ class _AppState extends State<App> {
             ),
             scaffoldBackgroundColor: const Color(0xFF101212),
             useMaterial3: true,
-            textTheme: GoogleFonts.spectralTextTheme().apply(
+            textTheme: GoogleFonts.robotoSlabTextTheme().apply(
               bodyColor: Colors.white,
               displayColor: Colors.white,
             ),
@@ -67,6 +67,15 @@ class _AppState extends State<App> {
                       scrollDirection: Axis.vertical,
                       itemBuilder: (context, index) =>
                           ArticleScreen(index: index),
+                    ),
+                    Positioned(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          height:
+                              MediaQuery.of(context).viewPadding.bottom + 16,
+                        ),
+                      ),
                     ),
                     const SafeArea(
                       child: _Version(),

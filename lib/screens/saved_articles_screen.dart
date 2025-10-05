@@ -1,9 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/models/article.dart';
-import 'package:wikwok/widgets/banner.dart';
 import 'package:wikwok/widgets/button/icon_button.dart';
 
 class SavedArticlesScreen extends StatefulWidget {
@@ -56,9 +56,19 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                                 launchUrl(Uri.parse(articles[index].url)),
                             leading: AspectRatio(
                               aspectRatio: 1,
-                              child: WikWokBanner(
-                                src: articles[index].imageUrl,
-                                showGradient: false,
+                              child: CachedNetworkImage(
+                                fadeInDuration:
+                                    const Duration(milliseconds: 300),
+                                fadeOutDuration:
+                                    const Duration(milliseconds: 300),
+                                fadeInCurve: Curves.easeInOut,
+                                fadeOutCurve: Curves.easeInOut,
+                                imageUrl: articles[index].imageUrl,
+                                fit: BoxFit.contain,
+                                errorWidget: (context, url, error) =>
+                                    const Center(
+                                  child: Icon(Icons.error),
+                                ),
                               ),
                             ),
                             textColor: Colors.white,

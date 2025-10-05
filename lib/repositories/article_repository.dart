@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wikwok/models/article.dart';
 import 'package:wikwok/utils/async_cache.dart';
@@ -33,37 +31,27 @@ class ArticleRepository {
         (article) => article.title == title,
       );
 
-  Future<Article?> fetch(BuildContext context, int currentIndex) async {
+  Future<Article?> fetch(int currentIndex) async {
     Article? article = _articles[currentIndex];
 
     if (article == null) {
       article = await _fetchRandomArticle();
 
-      if (context.mounted) {
-        precacheImage(CachedNetworkImageProvider(article.imageUrl), context);
-      }
-
       _articles[currentIndex] = article;
     }
 
-    // ignore: use_build_context_synchronously
-    unawaited(_fetchNextArticle(context, currentIndex));
+    unawaited(_fetchNextArticle(currentIndex));
 
     return article;
   }
 
-  Future<void> _fetchNextArticle(BuildContext context, int currentIndex) async {
+  Future<void> _fetchNextArticle(int currentIndex) async {
     final nextIndex = currentIndex + 1;
 
     if (!_articles.containsKey(nextIndex)) {
       final nextArticle = await _fetchRandomArticle();
 
       _articles[nextIndex] = nextArticle;
-
-      if (context.mounted) {
-        precacheImage(
-            CachedNetworkImageProvider(nextArticle.imageUrl), context);
-      }
     }
 
     if (_articles.length > _maxCache) {
@@ -130,7 +118,7 @@ class ArticleRepository {
       subtitle: data['description'] as String,
       title: data['titles']['normalized'] as String,
       content: data['extract'] as String,
-      imageUrl: data['originalimage']['source'] as String,
+      imageUrl: data['thumbnail']['source'] as String,
       url: data['content_urls']['mobile']['page'] as String,
     );
   }
@@ -148,7 +136,7 @@ class ArticleRepository {
           subtitle: data['description'] as String,
           title: data['titles']['normalized'] as String,
           content: data['extract'] as String,
-          imageUrl: data['originalimage']['source'] as String,
+          imageUrl: data['thumbnail']['source'] as String,
           url: data['content_urls']['mobile']['page'] as String,
         );
       });

@@ -107,26 +107,12 @@ class ArticleRepository {
   Future<Article> _fetchRandomArticle() async {
     final data = await _wikipediaService.fetchRandomArticle();
 
-    return Article(
-      id: data['pageid'] as int,
-      subtitle: data['description'] as String,
-      title: data['titles']['normalized'] as String,
-      content: data['extract'] as String,
-      imageUrl: data['thumbnail']['source'] as String,
-      url: data['content_urls']['mobile']['page'] as String,
-    );
+    return Article.fromJson(data);
   }
 
   Future<Article> fetchArticleByTitle(String title) async {
     final data = await _wikipediaService.fetchArticleByTitle(title);
 
-    return Article(
-      id: data['pageid'] as int,
-      subtitle: data['description'] as String,
-      title: data['titles']['normalized'] as String,
-      content: data['extract'] as String,
-      imageUrl: data['thumbnail']['source'] as String,
-      url: data['content_urls']['mobile']['page'] as String,
-    );
+    return Article.fromJson(data);
   }
 }

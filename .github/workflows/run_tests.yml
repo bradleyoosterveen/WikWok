@@ -2,22 +2,22 @@ name: Run tests
 
 on:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      test_all:
+        description: Run all tests
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.35.5
-
-      - name: Install Flutter dependencies
-        run: flutter pub get
-
-      - name: '🧪 Run tests'
-        run: flutter test lib/**/*_test.dart --exclude-tags "integration"
+      - run: flutter pub get
+      - run: flutter test lib/**/*_test.dart ${{ github.event.inputs.test_all == 'false' && '--exclude-tags "integration"' || '' }}

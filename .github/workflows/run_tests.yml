@@ -7,7 +7,7 @@ on:
       test_all:
         description: Run all tests
         required: true
-        default: true
+        default: false
         type: boolean
 
 jobs:

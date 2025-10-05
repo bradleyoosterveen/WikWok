@@ -71,7 +71,8 @@ class _AppState extends State<App> {
                     Positioned(
                       child: Align(
                         alignment: Alignment.bottomCenter,
-                        child: SizedBox(
+                        child: Container(
+                          color: Colors.transparent,
                           height:
                               MediaQuery.of(context).viewPadding.bottom + 16,
                         ),

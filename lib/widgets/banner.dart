@@ -16,7 +16,7 @@ class WikWokBanner extends StatelessWidget {
   final bool showGradient;
   final bool fill;
 
-  double get _blur => 4;
+  double get _blur => 16;
 
   double get _opacity => 0.16;
 
@@ -39,7 +39,10 @@ class WikWokBanner extends StatelessWidget {
               opacity: _opacity,
               child: ImageFiltered(
                 imageFilter: ImageFilter.blur(sigmaX: _blur, sigmaY: _blur),
-                child: _image(fit: BoxFit.cover),
+                child: Transform.scale(
+                  scale: 1.1,
+                  child: _image(fit: BoxFit.cover),
+                ),
               ),
             ),
           ),
@@ -51,12 +54,12 @@ class WikWokBanner extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      _backgroundColor.withValues(alpha: 0.64),
+                      _backgroundColor,
                       Colors.transparent,
                       Colors.transparent,
                       _backgroundColor,
                     ],
-                    stops: const [0, 0.3, 0.7, 1],
+                    stops: const [0, 0.2, 0.8, 1],
                   ),
                 ),
               ),

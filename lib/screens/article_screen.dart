@@ -11,12 +11,10 @@ import 'package:wikwok/widgets/circular_progress.dart';
 class ArticleScreen extends StatefulWidget {
   const ArticleScreen({
     required this.index,
-    required this.currentPageNotifier,
     super.key,
   });
 
   final int index;
-  final ValueNotifier<double> currentPageNotifier;
 
   @override
   State<ArticleScreen> createState() => _ArticleScreenState();
@@ -46,10 +44,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
               },
             ),
           ],
-          child: _View(
-            index: widget.index,
-            currentPageNotifier: widget.currentPageNotifier,
-          ),
+          child: _View(index: widget.index),
         ),
       ),
     );
@@ -59,70 +54,31 @@ class _ArticleScreenState extends State<ArticleScreen> {
 class _View extends StatefulWidget {
   const _View({
     required this.index,
-    required this.currentPageNotifier,
   });
 
   final int index;
-  final ValueNotifier<double> currentPageNotifier;
 
   @override
   State<_View> createState() => _ViewState();
 }
 
 class _ViewState extends State<_View> {
-  bool _hide = true;
-
   @override
   void initState() {
     super.initState();
 
     context.read<ArticleCubit>().fetch(widget.index);
-
-    widget.currentPageNotifier.addListener(_onPageNotifierChange);
-
-    _onPageNotifierChange();
-  }
-
-  @override
-  void dispose() {
-    widget.currentPageNotifier.removeListener(_onPageNotifierChange);
-
-    super.dispose();
-  }
-
-  void _onPageNotifierChange() {
-    final value = _scrollValue();
-
-    if (value < 0.4 && value > -0.4) {
-      if (!_hide) return;
-
-      setState(() => _hide = false);
-    } else {
-      if (_hide) return;
-
-      setState(() => _hide = true);
-    }
-  }
-
-  double _scrollValue() {
-    double distance = (widget.currentPageNotifier.value - widget.index);
-
-    return distance.clamp(-1.0, 1.0);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ArticleCubit, Article?>(
-      builder: (context, state) => AnimatedOpacity(
+      builder: (context, state) => AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
-        opacity: _hide ? 0.0 : 1.0,
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: switch (state) {
-            Article article => _content(article),
-            _ => wCircularProgress,
-          },
-        ),
+        child: switch (state) {
+          Article article => _content(article),
+          _ => wCircularProgress,
+        },
       ),
     );
   }

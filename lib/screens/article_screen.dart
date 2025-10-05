@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/cubits/article_cubit.dart';
 import 'package:wikwok/cubits/save_article_cubit.dart';
 import 'package:wikwok/models/article.dart';
 import 'package:wikwok/widgets/banner.dart';
-import 'package:wikwok/widgets/button/icon_button.dart';
+import 'package:wikwok/widgets/circular_progress.dart';
 
 class ArticleScreen extends StatefulWidget {
   const ArticleScreen({
@@ -119,7 +120,7 @@ class _ViewState extends State<_View> {
           duration: const Duration(milliseconds: 300),
           child: switch (state) {
             Article article => _content(article),
-            _ => const Center(child: CircularProgressIndicator()),
+            _ => wCircularProgress,
           },
         ),
       ),
@@ -134,80 +135,68 @@ class _ViewState extends State<_View> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24).subtract(
+              const EdgeInsets.only(top: 24),
+            ),
             child: SafeArea(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              article.subtitle,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.apply(
-                                    color: Colors.white.withValues(alpha: 0.76),
-                                  ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                      BlocBuilder<SaveArticleCubit, bool?>(
+                        builder: (context, state) => switch (state) {
+                          true => FButton.icon(
+                              style: FButtonStyle.ghost(),
+                              onPress: () => context
+                                  .read<SaveArticleCubit>()
+                                  .unsave(article.title),
+                              child: const Icon(FIcons.bookmarkMinus),
                             ),
-                            Text(
-                              article.title,
-                              style: Theme.of(context).textTheme.headlineLarge,
+                          false => FButton.icon(
+                              style: FButtonStyle.ghost(),
+                              onPress: () => context
+                                  .read<SaveArticleCubit>()
+                                  .save(article.title),
+                              child: const Icon(FIcons.bookmark),
                             ),
-                            const SizedBox(height: 12),
-                            Text(
-                              article.content,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              maxLines: 6,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
+                          _ => const SizedBox.shrink(),
+                        },
                       ),
-                      const SizedBox(width: 12),
-                      Column(
-                        children: [
-                          BlocBuilder<SaveArticleCubit, bool?>(
-                            builder: (context, state) => switch (state) {
-                              true => WikWokIconButton(
-                                  icon: Icons.bookmark,
-                                  onPressed: () => context
-                                      .read<SaveArticleCubit>()
-                                      .unsave(article.title),
-                                ),
-                              false => WikWokIconButton(
-                                  icon: Icons.bookmark_outline,
-                                  onPressed: () => context
-                                      .read<SaveArticleCubit>()
-                                      .save(article.title),
-                                ),
-                              _ => const SizedBox.shrink(),
-                            },
-                          ),
-                          WikWokIconButton(
-                            icon: Icons.share,
-                            onPressed: () {
-                              context
-                                  .read<ArticleCubit>()
-                                  .copyToClipboard(article.title);
-                            },
-                          ),
-                          WikWokIconButton(
-                            icon: Icons.open_in_new,
-                            onPressed: () => launchUrl(Uri.parse(article.url)),
-                          ),
-                        ],
+                      const SizedBox(width: 8),
+                      FButton.icon(
+                        style: FButtonStyle.ghost(),
+                        onPress: () => context
+                            .read<ArticleCubit>()
+                            .copyToClipboard(article.title),
+                        child: const Icon(FIcons.share2),
+                      ),
+                      const SizedBox(width: 8),
+                      FButton.icon(
+                        style: FButtonStyle.ghost(),
+                        onPress: () => launchUrl(Uri.parse(article.url)),
+                        child: const Icon(FIcons.externalLink),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  FCard(
+                    subtitle: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        article.subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    title: Text(article.title),
+                    child: Text(
+                      article.content,
+                      maxLines: 6,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),

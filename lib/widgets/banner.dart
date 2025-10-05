@@ -2,20 +2,31 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 
 class WikWokBanner extends StatelessWidget {
   const WikWokBanner({
     required this.src,
     this.showGradient = true,
+    this.fill = false,
     super.key,
   });
 
   final String src;
   final bool showGradient;
+  final bool fill;
 
-  double get _blur => 8;
+  double get _blur => 4;
 
   double get _opacity => 0.16;
+
+  Color get _backgroundColor => FThemes.zinc.dark.scaffoldStyle.backgroundColor;
+
+  EdgeInsetsGeometry get _padding => fill
+      ? EdgeInsets.zero
+      : const EdgeInsets.symmetric(horizontal: 24).add(
+          const EdgeInsets.only(top: 64),
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +43,6 @@ class WikWokBanner extends StatelessWidget {
               ),
             ),
           ),
-          Positioned.fill(
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: _image(fit: BoxFit.contain),
-              ),
-            ),
-          ),
           if (showGradient) ...[
             Positioned.fill(
               child: Container(
@@ -49,17 +51,27 @@ class WikWokBanner extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      const Color(0xFF101212).withValues(alpha: 0.76),
+                      _backgroundColor.withValues(alpha: 0.64),
                       Colors.transparent,
                       Colors.transparent,
-                      const Color(0xFF101212),
+                      _backgroundColor,
                     ],
-                    stops: const [0, 0.2, 0.6, 1],
+                    stops: const [0, 0.3, 0.7, 1],
                   ),
                 ),
               ),
             ),
           ],
+          Positioned.fill(
+            child: SafeArea(
+              bottom: false,
+              top: fill ? false : true,
+              child: Padding(
+                padding: _padding,
+                child: _image(fit: BoxFit.contain),
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -1,7 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wikwok/models/version.dart';
-import 'package:wikwok/utils/async_cache.dart';
+import 'package:wikwok/services/github_service.dart';
 
 class VersionRepository {
   static final VersionRepository _instance = VersionRepository._internal();
@@ -10,52 +9,34 @@ class VersionRepository {
 
   VersionRepository._internal();
 
-  final _dio = Dio();
+  final _githubService = GithubService();
 
-  final _asyncCache = AsyncCache();
+  Future<Version> getCurrentVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
 
-  Future<Version> getCurrentVersion() async => _asyncCache.handle(
-      key: 'VersionRepository.getCurrentVersion',
-      action: () async {
-        final packageInfo = await PackageInfo.fromPlatform();
+    final version = packageInfo.version;
 
-        final version = packageInfo.version;
+    return Version.parse(version);
+  }
 
-        return Version.parse(version);
-      });
+  Future<Version> getLatestVersion() async {
+    final data = await _githubService.fetchLatestRelease();
 
-  Future<Version> getLatestVersion() async => _asyncCache.handle(
-      key: 'VersionRepository.getLatestVersion',
-      action: () async {
-        final response = await _dio.get(
-          'https://api.github.com/repos/bradleyoosterveen/wikwok/releases/latest',
-        );
+    final versionString = data['tag_name'] as String;
 
-        final data = response.data;
+    return Version.parse(versionString.substring(1));
+  }
 
-        final versionString = data['tag_name'] as String;
+  Future<bool> isUpdateAvailable() async {
+    final currentVersion = await getCurrentVersion();
+    final latestVersion = await getLatestVersion();
 
-        return Version.parse(versionString.substring(1));
-      });
+    return latestVersion.isNewerThan(currentVersion);
+  }
 
-  Future<bool> isUpdateAvailable() async => _asyncCache.handle(
-      key: 'VersionRepository.isUpdateAvailable',
-      action: () async {
-        final currentVersion = await getCurrentVersion();
-        final latestVersion = await getLatestVersion();
+  Future<String> getUpdateUrl() async {
+    final data = await _githubService.fetchLatestRelease();
 
-        return latestVersion.isNewerThan(currentVersion);
-      });
-
-  Future<String> getUpdateUrl() async => _asyncCache.handle(
-      key: 'VersionRepository.getUpdateUrl',
-      action: () async {
-        final response = await _dio.get(
-          'https://api.github.com/repos/bradleyoosterveen/wikwok/releases/latest',
-        );
-
-        final data = response.data;
-
-        return data['html_url'] as String;
-      });
+    return data['html_url'] as String;
+  }
 }

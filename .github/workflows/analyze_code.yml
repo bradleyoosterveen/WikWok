@@ -25,5 +25,5 @@ jobs:
       - name: '🛠️ Fix code'
         run: dart fix --dry-run
 
-      - Name: '🔍 Analyze code'
+      - name: '🔍 Analyze code'
         run: dart analyze

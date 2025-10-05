@@ -19,7 +19,6 @@ dependencies:
   shared_preferences: ^2.5.3
   collection: ^1.19.1
   package_info_plus: ^9.0.0
-  flutter_launcher_icons: ^0.14.4
   cached_network_image: ^3.4.1
   forui: ^0.16.0
 

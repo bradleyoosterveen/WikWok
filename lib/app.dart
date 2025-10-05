@@ -18,6 +18,19 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final _pageController = PageController();
+
+  final ValueNotifier<double> _currentPage = ValueNotifier<double>(0);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController.addListener(() {
+      _currentPage.value = _pageController.page ?? 0.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -41,7 +54,7 @@ class _AppState extends State<App> {
             ),
             scaffoldBackgroundColor: const Color(0xFF101212),
             useMaterial3: true,
-            textTheme: GoogleFonts.spectralTextTheme().apply(
+            textTheme: GoogleFonts.robotoSlabTextTheme().apply(
               bodyColor: Colors.white,
               displayColor: Colors.white,
             ),
@@ -64,9 +77,22 @@ class _AppState extends State<App> {
                 child: Stack(
                   children: [
                     PageView.builder(
+                      controller: _pageController,
                       scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) =>
-                          ArticleScreen(index: index),
+                      itemBuilder: (context, index) => ArticleScreen(
+                        index: index,
+                        currentPageNotifier: _currentPage,
+                      ),
+                    ),
+                    Positioned(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          color: Colors.transparent,
+                          height:
+                              MediaQuery.of(context).viewPadding.bottom + 16,
+                        ),
+                      ),
                     ),
                     const SafeArea(
                       child: _Version(),

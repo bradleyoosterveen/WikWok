@@ -10,10 +10,12 @@ import 'package:wikwok/widgets/button/icon_button.dart';
 class ArticleScreen extends StatefulWidget {
   const ArticleScreen({
     required this.index,
+    required this.currentPageNotifier,
     super.key,
   });
 
   final int index;
+  final ValueNotifier<double> currentPageNotifier;
 
   @override
   State<ArticleScreen> createState() => _ArticleScreenState();
@@ -33,7 +35,21 @@ class _ArticleScreenState extends State<ArticleScreen> {
         BlocProvider(create: (context) => SaveArticleCubit()),
       ],
       child: Scaffold(
-        body: _View(index: widget.index),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<ArticleCubit, Article?>(
+              listener: (context, state) => switch (state) {
+                Article article =>
+                  context.read<SaveArticleCubit>().get(article.title),
+                _ => {},
+              },
+            ),
+          ],
+          child: _View(
+            index: widget.index,
+            currentPageNotifier: widget.currentPageNotifier,
+          ),
+        ),
       ),
     );
   }
@@ -42,131 +58,160 @@ class _ArticleScreenState extends State<ArticleScreen> {
 class _View extends StatefulWidget {
   const _View({
     required this.index,
+    required this.currentPageNotifier,
   });
 
   final int index;
+  final ValueNotifier<double> currentPageNotifier;
 
   @override
   State<_View> createState() => _ViewState();
 }
 
 class _ViewState extends State<_View> {
+  bool _hide = true;
+
   @override
   void initState() {
     super.initState();
 
     context.read<ArticleCubit>().fetch(widget.index);
+
+    widget.currentPageNotifier.addListener(_onPageNotifierChange);
+
+    _onPageNotifierChange();
+  }
+
+  @override
+  void dispose() {
+    widget.currentPageNotifier.removeListener(_onPageNotifierChange);
+
+    super.dispose();
+  }
+
+  void _onPageNotifierChange() {
+    final value = _scrollValue();
+
+    if (value < 0.4 && value > -0.4) {
+      if (!_hide) return;
+
+      setState(() => _hide = false);
+    } else {
+      if (_hide) return;
+
+      setState(() => _hide = true);
+    }
+  }
+
+  double _scrollValue() {
+    double distance = (widget.currentPageNotifier.value - widget.index);
+
+    return distance.clamp(-1.0, 1.0);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ArticleCubit, Article?>(
-        builder: (context, state) => AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: switch (state) {
-                Article article => _content(article),
-                _ => const Center(child: CircularProgressIndicator()),
-              },
-            ));
+      builder: (context, state) => AnimatedOpacity(
+        duration: const Duration(milliseconds: 300),
+        opacity: _hide ? 0.0 : 1.0,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: switch (state) {
+            Article article => _content(article),
+            _ => const Center(child: CircularProgressIndicator()),
+          },
+        ),
+      ),
+    );
   }
 
-  Widget _content(Article article) => StatefulBuilder(builder: (context, _) {
-        context.read<SaveArticleCubit>().get(article.title);
-
-        return Column(
-          children: [
-            Expanded(
-              child: WikWokBanner(
-                src: article.imageUrl,
-              ),
+  Widget _content(Article article) => Column(
+        children: [
+          Expanded(
+            child: WikWokBanner(
+              src: article.imageUrl,
             ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: SafeArea(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                article.subtitle,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.apply(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.76),
-                                    ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                article.title,
-                                style:
-                                    Theme.of(context).textTheme.headlineLarge,
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                article.content,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                maxLines: 6,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Column(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            BlocBuilder<SaveArticleCubit, bool?>(
-                              builder: (context, state) => switch (state) {
-                                true => WikWokIconButton(
-                                    icon: Icons.bookmark,
-                                    label: 'Saved',
-                                    onPressed: () => context
-                                        .read<SaveArticleCubit>()
-                                        .unsave(article.title),
+                            Text(
+                              article.subtitle,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium
+                                  ?.apply(
+                                    color: Colors.white.withValues(alpha: 0.76),
                                   ),
-                                false => WikWokIconButton(
-                                    icon: Icons.bookmark_outline,
-                                    label: 'Save',
-                                    onPressed: () => context
-                                        .read<SaveArticleCubit>()
-                                        .save(article.title),
-                                  ),
-                                _ => const SizedBox.shrink(),
-                              },
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            WikWokIconButton(
-                              icon: Icons.share,
-                              label: 'Share',
-                              onPressed: () {
-                                context
-                                    .read<ArticleCubit>()
-                                    .copyToClipboard(article.title);
-                              },
+                            Text(
+                              article.title,
+                              style: Theme.of(context).textTheme.headlineLarge,
                             ),
-                            WikWokIconButton(
-                              icon: Icons.open_in_new,
-                              label: 'Open',
-                              onPressed: () =>
-                                  launchUrl(Uri.parse(article.url)),
+                            const SizedBox(height: 12),
+                            Text(
+                              article.content,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              maxLines: 6,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        children: [
+                          BlocBuilder<SaveArticleCubit, bool?>(
+                            builder: (context, state) => switch (state) {
+                              true => WikWokIconButton(
+                                  icon: Icons.bookmark,
+                                  onPressed: () => context
+                                      .read<SaveArticleCubit>()
+                                      .unsave(article.title),
+                                ),
+                              false => WikWokIconButton(
+                                  icon: Icons.bookmark_outline,
+                                  onPressed: () => context
+                                      .read<SaveArticleCubit>()
+                                      .save(article.title),
+                                ),
+                              _ => const SizedBox.shrink(),
+                            },
+                          ),
+                          WikWokIconButton(
+                            icon: Icons.share,
+                            onPressed: () {
+                              context
+                                  .read<ArticleCubit>()
+                                  .copyToClipboard(article.title);
+                            },
+                          ),
+                          WikWokIconButton(
+                            icon: Icons.open_in_new,
+                            onPressed: () => launchUrl(Uri.parse(article.url)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        );
-      });
+          ),
+        ],
+      );
 }

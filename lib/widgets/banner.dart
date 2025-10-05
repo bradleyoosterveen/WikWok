@@ -14,6 +14,7 @@ class WikWokBanner extends StatelessWidget {
   final bool showGradient;
 
   double get _blur => 8;
+
   double get _opacity => 0.16;
 
   @override
@@ -32,7 +33,13 @@ class WikWokBanner extends StatelessWidget {
             ),
           ),
           Positioned.fill(
-            child: _image(fit: BoxFit.contain),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: _image(fit: BoxFit.contain),
+              ),
+            ),
           ),
           if (showGradient) ...[
             Positioned.fill(

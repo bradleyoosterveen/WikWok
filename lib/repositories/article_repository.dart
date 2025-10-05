@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wikwok/models/article.dart';
-import 'package:wikwok/utils/async_cache.dart';
+import 'package:wikwok/services/wikipedia_service.dart';
 
 class ArticleRepository {
   static final ArticleRepository _instance = ArticleRepository._internal();
@@ -15,9 +14,7 @@ class ArticleRepository {
 
   final _preferences = SharedPreferencesAsync();
 
-  final _dio = Dio();
-
-  final _asyncCache = AsyncCache();
+  final _wikipediaService = WikipediaService();
 
   final _maxCache = 99;
 
@@ -108,10 +105,7 @@ class ArticleRepository {
   }
 
   Future<Article> _fetchRandomArticle() async {
-    final response = await _dio
-        .get('https://en.wikipedia.org/api/rest_v1/page/random/summary');
-
-    final data = response.data;
+    final data = await _wikipediaService.fetchRandomArticle();
 
     return Article(
       id: data['pageid'] as int,
@@ -123,21 +117,16 @@ class ArticleRepository {
     );
   }
 
-  Future<Article> fetchArticleByTitle(String title) async => _asyncCache.handle(
-      key: title,
-      action: () async {
-        final response = await _dio
-            .get('https://en.wikipedia.org/api/rest_v1/page/summary/$title');
+  Future<Article> fetchArticleByTitle(String title) async {
+    final data = await _wikipediaService.fetchArticleByTitle(title);
 
-        final data = response.data;
-
-        return Article(
-          id: data['pageid'] as int,
-          subtitle: data['description'] as String,
-          title: data['titles']['normalized'] as String,
-          content: data['extract'] as String,
-          imageUrl: data['thumbnail']['source'] as String,
-          url: data['content_urls']['mobile']['page'] as String,
-        );
-      });
+    return Article(
+      id: data['pageid'] as int,
+      subtitle: data['description'] as String,
+      title: data['titles']['normalized'] as String,
+      content: data['extract'] as String,
+      imageUrl: data['thumbnail']['source'] as String,
+      url: data['content_urls']['mobile']['page'] as String,
+    );
+  }
 }

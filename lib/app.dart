@@ -18,6 +18,19 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final _pageController = PageController();
+
+  final ValueNotifier<double> _currentPage = ValueNotifier<double>(0);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController.addListener(() {
+      _currentPage.value = _pageController.page ?? 0.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -64,9 +77,12 @@ class _AppState extends State<App> {
                 child: Stack(
                   children: [
                     PageView.builder(
+                      controller: _pageController,
                       scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) =>
-                          ArticleScreen(index: index),
+                      itemBuilder: (context, index) => ArticleScreen(
+                        index: index,
+                        currentPageNotifier: _currentPage,
+                      ),
                     ),
                     Positioned(
                       child: Align(

@@ -16,7 +16,7 @@ class _Case {
 
 void main() {
   group('Version', () {
-    test('isNewerThan()', () {
+    group('isNewerThan()', () {
       final cases = <_Case>[
         _Case(
           version: Version.parse('1.0.0'),
@@ -50,11 +50,13 @@ void main() {
       ];
 
       for (final case_ in cases) {
-        expect(
-          case_.version.isNewerThan(case_.other),
-          case_.expected,
-          reason: 'version: ${case_.version}, other: ${case_.other}',
-        );
+        test('${case_.version} isNewerThan ${case_.other}', () {
+          expect(
+            case_.version.isNewerThan(case_.other),
+            case_.expected,
+            reason: 'version: ${case_.version}, other: ${case_.other}',
+          );
+        });
       }
     });
   });

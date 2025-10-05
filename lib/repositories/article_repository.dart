@@ -118,7 +118,7 @@ class ArticleRepository {
       subtitle: data['description'] as String,
       title: data['titles']['normalized'] as String,
       content: data['extract'] as String,
-      imageUrl: data['originalimage']['source'] as String,
+      imageUrl: data['thumbnail']['source'] as String,
       url: data['content_urls']['mobile']['page'] as String,
     );
   }
@@ -136,7 +136,7 @@ class ArticleRepository {
           subtitle: data['description'] as String,
           title: data['titles']['normalized'] as String,
           content: data['extract'] as String,
-          imageUrl: data['originalimage']['source'] as String,
+          imageUrl: data['thumbnail']['source'] as String,
           url: data['content_urls']['mobile']['page'] as String,
         );
       });

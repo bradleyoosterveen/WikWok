@@ -2,6 +2,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wikwok/services/wikipedia_service.dart';
 
+final _tags = ['integration'];
+
 void main() {
   final service = WikipediaService();
 
@@ -11,7 +13,7 @@ void main() {
         final article = await service.fetchRandomArticle();
 
         expect(article.containsKey('pageid'), true);
-      });
+      }, tags: _tags);
 
       test('should return a different article each time', () async {
         final article1 = await service.fetchRandomArticle();
@@ -25,7 +27,7 @@ void main() {
         expect(pageid1, isNot(pageid2));
         expect(pageid2, isNot(pageid3));
         expect(pageid1, isNot(pageid3));
-      });
+      }, tags: _tags);
     });
 
     group('fetchArticleByTitle()', () {
@@ -33,13 +35,13 @@ void main() {
         final article = await service.fetchArticleByTitle('Flutter');
 
         expect(article.containsKey('pageid'), true);
-      });
+      }, tags: _tags);
 
       test('should return an article with the given title', () async {
         final article = await service.fetchArticleByTitle('Flutter_(software)');
 
         expect(article['titles']['normalized'], 'Flutter (software)');
-      });
+      }, tags: _tags);
     });
   });
 }

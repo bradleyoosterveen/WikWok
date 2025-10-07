@@ -1,8 +1,8 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wikwok/cubits/cubit.dart';
 import 'package:wikwok/models/version.dart';
 import 'package:wikwok/repositories/version_repository.dart';
 
-class UpdateCubit extends Cubit<UpdateState?> {
+class UpdateCubit extends WCubit<UpdateState?> {
   UpdateCubit() : super(null);
 
   final _versionRepository = VersionRepository();

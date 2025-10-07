@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
+import 'package:wikwok/cubits/connectivity_cubit.dart';
 import 'package:wikwok/cubits/current_version_cubit.dart';
 import 'package:wikwok/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/cubits/settings_cubit.dart';
@@ -34,6 +35,10 @@ class _AppState extends State<App> {
         BlocProvider(
           lazy: false,
           create: (context) => SettingsCubit()..get(),
+        ),
+        BlocProvider(
+          lazy: false,
+          create: (context) => ConnectivityCubit()..initialize(),
         ),
       ],
       child: Builder(builder: (context) {

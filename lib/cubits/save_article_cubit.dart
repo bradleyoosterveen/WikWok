@@ -1,7 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wikwok/cubits/cubit.dart';
 import 'package:wikwok/repositories/article_repository.dart';
 
-class SaveArticleCubit extends Cubit<bool?> {
+class SaveArticleCubit extends WCubit<bool?> {
   SaveArticleCubit() : super(null);
 
   final _articleRepository = ArticleRepository();

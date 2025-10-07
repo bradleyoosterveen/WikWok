@@ -58,7 +58,7 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                                   launchUrl(Uri.parse(articles[index].url)),
                               leading: AspectRatio(
                                 aspectRatio: 1,
-                                child: WikWokBanner(
+                                child: WBanner(
                                   src: articles[index].imageUrl,
                                   fill: true,
                                 ),
@@ -83,7 +83,7 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                    _ => wCircularProgress,
+                    _ => const WCircularProgress(),
                   },
                 ),
               ),

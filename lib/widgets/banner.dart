@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:wikwok/widgets/cached_network_image.dart';
 
-class WikWokBanner extends StatelessWidget {
-  const WikWokBanner({
+class WBanner extends StatelessWidget {
+  const WBanner({
     required this.src,
     this.showGradient = true,
     this.fill = false,
@@ -41,7 +41,10 @@ class WikWokBanner extends StatelessWidget {
                 imageFilter: ImageFilter.blur(sigmaX: _blur, sigmaY: _blur),
                 child: Transform.scale(
                   scale: 1.1,
-                  child: _image(fit: BoxFit.cover),
+                  child: WCachedNetworkImage(
+                    src: src,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -71,7 +74,10 @@ class WikWokBanner extends StatelessWidget {
               top: fill ? false : true,
               child: Padding(
                 padding: _padding,
-                child: _image(fit: BoxFit.contain),
+                child: WCachedNetworkImage(
+                  src: src,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
@@ -79,16 +85,4 @@ class WikWokBanner extends StatelessWidget {
       ),
     );
   }
-
-  Widget _image({required BoxFit fit}) => CachedNetworkImage(
-        fadeInDuration: const Duration(milliseconds: 300),
-        fadeOutDuration: const Duration(milliseconds: 300),
-        fadeInCurve: Curves.easeInOut,
-        fadeOutCurve: Curves.easeInOut,
-        imageUrl: src,
-        fit: fit,
-        errorWidget: (context, url, error) => const Center(
-          child: Icon(Icons.error),
-        ),
-      );
 }

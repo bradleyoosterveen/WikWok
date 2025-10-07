@@ -77,7 +77,7 @@ class _ViewState extends State<_View> {
         duration: const Duration(milliseconds: 300),
         child: switch (state) {
           Article article => _content(article),
-          _ => wCircularProgress,
+          _ => const WCircularProgress(),
         },
       ),
     );
@@ -86,7 +86,7 @@ class _ViewState extends State<_View> {
   Widget _content(Article article) => Column(
         children: [
           Expanded(
-            child: WikWokBanner(
+            child: WBanner(
               src: article.imageUrl,
             ),
           ),

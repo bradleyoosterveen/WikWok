@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:forui/forui.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/cubits/current_version_cubit.dart';
 import 'package:wikwok/cubits/settings_cubit.dart';
 import 'package:wikwok/gen/assets.gen.dart';
@@ -32,25 +33,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
             right: 24.0,
             top: 24.0),
         child: BlocBuilder<CurrentVersionCubit, String?>(
-          builder: (context, state) => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          builder: (context, state) => Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              FLabel(
-                axis: Axis.vertical,
-                label: const Text('Current version'),
-                child: Text(state ?? '-'),
-              ),
-              SizedBox(
-                height: 32,
-                child: SvgPicture.asset(
-                  Assets.logo,
-                  fit: BoxFit.cover,
-                  height: 72,
-                  colorFilter: ColorFilter.mode(
-                    context.theme.colors.secondaryForeground,
-                    BlendMode.srcIn,
-                  ),
+              Opacity(
+                opacity: 0.64,
+                child: Text(
+                  'This app is not affiliated with, endorsed by, or sponsored by Wikipedia or the Wikimedia Foundation. All trademarks and registered trademarks are the property of their respective owners.',
+                  textAlign: TextAlign.center,
+                  style: context.theme.typography.sm,
                 ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FLabel(
+                    axis: Axis.vertical,
+                    label: const Text('Current version'),
+                    child: Text(state ?? '-'),
+                  ),
+                  SizedBox(
+                    height: 32,
+                    child: SvgPicture.asset(
+                      Assets.logo,
+                      fit: BoxFit.cover,
+                      height: 72,
+                      colorFilter: ColorFilter.mode(
+                        context.theme.colors.secondaryForeground,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -68,11 +83,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Builder(builder: (context) {
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              Builder(builder: (context) {
                 final settings = context.watch<SettingsCubit>().state;
 
                 return FTileGroup(
@@ -136,8 +151,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 );
               }),
-            )
-          ],
+              const SizedBox(height: 24),
+              FTileGroup(
+                divider: FItemDivider.full,
+                children: [
+                  FTile(
+                    prefix: const Icon(FIcons.gitPullRequestArrow),
+                    title: const Text('Suggest feature'),
+                    suffix: const Icon(FIcons.chevronRight),
+                    onPress: () => launchUrl(Uri.parse(
+                        'https://github.com/bradleyoosterveen/WikWok/issues/new?template=enhancement.yml')),
+                  ),
+                  FTile(
+                    prefix: const Icon(FIcons.bug),
+                    title: const Text('Report a bug'),
+                    suffix: const Icon(FIcons.chevronRight),
+                    onPress: () => launchUrl(Uri.parse(
+                        'https://github.com/bradleyoosterveen/WikWok/issues/new?template=bug.yml')),
+                  ),
+                  FTile(
+                    prefix: const Icon(FIcons.code),
+                    title: const Text('View source code'),
+                    suffix: const Icon(FIcons.chevronRight),
+                    onPress: () => launchUrl(Uri.parse(
+                        'https://github.com/bradleyoosterveen/WikWok')),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              FTileGroup(
+                divider: FItemDivider.full,
+                children: [
+                  FTile(
+                    prefix: const Icon(FIcons.heart),
+                    title: const Text('Donate to the Wikimedia Foundation'),
+                    suffix: const Icon(FIcons.chevronRight),
+                    onPress: () =>
+                        launchUrl(Uri.parse('https://donate.wikimedia.org/')),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

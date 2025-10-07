@@ -58,8 +58,8 @@ class WBanner extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       _backgroundColor,
-                      Colors.transparent,
-                      Colors.transparent,
+                      _backgroundColor.withValues(alpha: 0),
+                      _backgroundColor.withValues(alpha: 0),
                       _backgroundColor,
                     ],
                     stops: const [0, 0.2, 0.8, 1],

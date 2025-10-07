@@ -44,28 +44,24 @@ class _AppState extends State<App> {
           home: Builder(
             builder: (context) => FScaffold(
               childPad: false,
-              child: DefaultTabController(
-                length: 2,
-                child: Stack(
-                  children: [
-                    PageView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) =>
-                          ArticleScreen(index: index),
-                    ),
-                    Positioned(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          color: Colors.transparent,
-                          height:
-                              MediaQuery.of(context).viewPadding.bottom + 16,
-                        ),
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (context, index) =>
+                        ArticleScreen(index: index),
+                  ),
+                  Positioned(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        color: Colors.transparent,
+                        height: MediaQuery.of(context).viewPadding.bottom + 16,
                       ),
                     ),
-                    const _Header(),
-                  ],
-                ),
+                  ),
+                  const _Header(),
+                ],
               ),
             ),
           ),
@@ -97,7 +93,7 @@ class _Header extends StatelessWidget {
             style: FButtonStyle.ghost(),
             onPress: () =>
                 Navigator.of(context).push(SavedArticlesScreen.route()),
-            child: const Icon(FIcons.bookmarkCheck),
+            child: const Icon(FIcons.library),
           ),
         ],
       ),

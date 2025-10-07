@@ -108,14 +108,14 @@ class _ViewState extends State<_View> {
                               onPress: () => context
                                   .read<SaveArticleCubit>()
                                   .unsave(article.title),
-                              child: const Icon(FIcons.bookmarkMinus),
+                              child: const Icon(FIcons.bookMarked),
                             ),
                           false => FButton.icon(
                               style: FButtonStyle.ghost(),
                               onPress: () => context
                                   .read<SaveArticleCubit>()
                                   .save(article.title),
-                              child: const Icon(FIcons.bookmark),
+                              child: const Icon(FIcons.book),
                             ),
                           _ => const SizedBox.shrink(),
                         },

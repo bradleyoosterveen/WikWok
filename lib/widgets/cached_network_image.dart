@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/assets.dart';
 
 class WCachedNetworkImage extends StatelessWidget {
   const WCachedNetworkImage({
@@ -20,7 +21,13 @@ class WCachedNetworkImage extends StatelessWidget {
         imageUrl: src,
         fit: fit,
         errorWidget: (context, url, error) => const Center(
-          child: Icon(Icons.error),
+          child: Opacity(
+            opacity: 0.32,
+            child: Icon(
+              FIcons.imageOff,
+              size: 32,
+            ),
+          ),
         ),
       );
 }

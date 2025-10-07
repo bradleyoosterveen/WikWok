@@ -10,9 +10,11 @@ import 'package:wikwok/widgets/circular_progress.dart';
 class SavedArticlesScreen extends StatefulWidget {
   const SavedArticlesScreen({super.key});
 
-  static route() => MaterialPageRoute(
-        builder: (context) => const SavedArticlesScreen(),
-      );
+  static push(BuildContext context) =>
+      Navigator.of(context).push(SavedArticlesScreen._route);
+
+  static final MaterialPageRoute _route =
+      MaterialPageRoute(builder: (context) => const SavedArticlesScreen());
 
   @override
   State<SavedArticlesScreen> createState() => _SavedArticlesScreenState();

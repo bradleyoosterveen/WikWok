@@ -8,8 +8,8 @@ import 'package:wikwok/models/article.dart';
 import 'package:wikwok/widgets/banner.dart';
 import 'package:wikwok/widgets/circular_progress.dart';
 
-class ArticleScreen extends StatefulWidget {
-  const ArticleScreen({
+class ArticlePage extends StatefulWidget {
+  const ArticlePage({
     required this.index,
     super.key,
   });
@@ -17,10 +17,10 @@ class ArticleScreen extends StatefulWidget {
   final int index;
 
   @override
-  State<ArticleScreen> createState() => _ArticleScreenState();
+  State<ArticlePage> createState() => _ArticlePageState();
 }
 
-class _ArticleScreenState extends State<ArticleScreen> {
+class _ArticlePageState extends State<ArticlePage> {
   @override
   void initState() {
     super.initState();

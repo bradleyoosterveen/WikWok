@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wikwok/models/article.dart';
+import 'package:wikwok/models/settings.dart';
+import 'package:wikwok/repositories/settings_repository.dart';
 import 'package:wikwok/services/wikipedia_service.dart';
 
 class ArticleRepository {
@@ -15,6 +17,7 @@ class ArticleRepository {
   final _preferences = SharedPreferencesAsync();
 
   final _wikipediaService = WikipediaService();
+  final _settingsRepository = SettingsRepository();
 
   final _maxCache = 99;
 
@@ -37,13 +40,23 @@ class ArticleRepository {
       _articles[currentIndex] = article;
     }
 
-    unawaited(_fetchNextArticle(currentIndex));
+    final prefetchAmount =
+        switch ((await _settingsRepository.get()).articlePrefetchRange) {
+      ArticlePrefetchRange.none => 0,
+      ArticlePrefetchRange.short => 1,
+      ArticlePrefetchRange.medium => 2,
+      ArticlePrefetchRange.large => 3,
+    };
+
+    for (var i = 0; i < prefetchAmount; i++) {
+      unawaited(_fetchNextArticle(currentIndex + i));
+    }
 
     return article;
   }
 
-  Future<void> _fetchNextArticle(int currentIndex) async {
-    final nextIndex = currentIndex + 1;
+  Future<void> _fetchNextArticle(int index) async {
+    final nextIndex = index + 1;
 
     if (!_articles.containsKey(nextIndex)) {
       final nextArticle = await _fetchRandomArticle();

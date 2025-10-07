@@ -11,9 +11,9 @@ class SavedArticlesScreen extends StatefulWidget {
   const SavedArticlesScreen({super.key});
 
   static push(BuildContext context) =>
-      Navigator.of(context).push(SavedArticlesScreen._route);
+      Navigator.of(context).push(SavedArticlesScreen._route());
 
-  static final MaterialPageRoute _route =
+  static MaterialPageRoute _route() =>
       MaterialPageRoute(builder: (context) => const SavedArticlesScreen());
 
   @override
@@ -60,9 +60,11 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                                   launchUrl(Uri.parse(articles[index].url)),
                               leading: AspectRatio(
                                 aspectRatio: 1,
-                                child: WBanner(
-                                  src: articles[index].imageUrl,
-                                  fill: true,
+                                child: Builder(
+                                  builder: (context) => WBanner(
+                                    src: articles[index].thumbnailUrl,
+                                    fill: true,
+                                  ),
                                 ),
                               ),
                               textColor: Colors.white,

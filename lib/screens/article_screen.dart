@@ -96,6 +96,7 @@ class _ViewState extends State<_View> {
             ),
             child: SafeArea(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

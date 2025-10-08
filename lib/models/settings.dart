@@ -15,7 +15,7 @@ class Settings {
     required this.doomScrollDirection,
   });
 
-  factory Settings.withDefaultValues() => Settings._(
+  factory Settings.asDefault() => Settings._(
         themeMode: ThemeMode.system,
         articlePrefetchRange: ArticlePrefetchRange.short,
         shouldDownloadFullSizeImages: ShouldDownloadFullSizeImages.no,
@@ -56,7 +56,7 @@ class Settings {
         doomScrollDirection: Axis.values[map['doomScrollDirection']],
       );
     } catch (e) {
-      return Settings.withDefaultValues();
+      return Settings.asDefault();
     }
   }
 

@@ -15,7 +15,7 @@ class SettingsRepository {
   Future<Settings> get() async {
     final data = await _preferences.getString(_key);
 
-    if (data == null) return Settings.withDefaultValues();
+    if (data == null) return Settings.asDefault();
 
     return Settings.fromJson(data);
   }

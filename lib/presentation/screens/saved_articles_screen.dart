@@ -39,7 +39,7 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
             onPress: () => Navigator.pop(context),
           ),
         ],
-        title: const Text('Saved articles'),
+        title: const Text('Library'),
       ),
       child: SafeArea(
         top: false,
@@ -48,11 +48,12 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: BlocBuilder<SavedArticlesCubit, List<Article>?>(
-                  builder: (context, state) => switch (state) {
-                    List<Article> articles => articles.isNotEmpty
-                        ? ListView.builder(
+              BlocBuilder<SavedArticlesCubit, List<Article>?>(
+                builder: (context, state) => switch (state) {
+                  List<Article> articles => articles.isNotEmpty
+                      ? Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
                             padding: EdgeInsets.zero,
                             itemCount: articles.length,
                             itemBuilder: (context, index) => ListTile(
@@ -78,18 +79,22 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                                 child: const Icon(FIcons.trash),
                               ),
                             ),
-                          )
-                        : Center(
-                            child: Text(
-                              'No saved articles',
-                              style: context.theme.typography.xl,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                          ),
+                        )
+                      : FCard(
+                          style: (style) => style.copyWith(
+                            decoration: style.decoration.copyWith(
+                              border: Border.all(width: 0),
                             ),
                           ),
-                    _ => const WCircularProgress(),
-                  },
-                ),
+                          title: const Text('Your library is empty'),
+                          subtitle: const SizedBox.shrink(),
+                          child: const Text(
+                            'Add some articles to your library.',
+                          ),
+                        ),
+                  _ => const WCircularProgress(),
+                },
               ),
             ],
           ),

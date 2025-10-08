@@ -20,7 +20,7 @@ jobs:
         run: flutter pub get
 
       - name: '🧪 Run tests'
-        run: flutter test lib/**/*_test.dart --exclude-tags "integration"
+        run: flutter test lib --exclude-tags "integration"
 
   format:
     runs-on: ubuntu-latest

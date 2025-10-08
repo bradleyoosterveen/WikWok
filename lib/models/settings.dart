@@ -65,16 +65,9 @@ class Settings {
 }
 
 enum ArticlePrefetchRange {
-  /// Doesn't prefetch
   none,
-
-  /// Prefetch 1 article
   short,
-
-  /// Prefetch 2 articles
   medium,
-
-  /// Prefetch 3 articles
   large;
 }
 

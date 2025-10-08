@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wikwok/models/version.dart';
+import 'package:wikwok/domain/models/version.dart';
 
 class _Case {
   final Version version;

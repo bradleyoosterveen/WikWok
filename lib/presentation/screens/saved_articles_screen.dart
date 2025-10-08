@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wikwok/cubits/saved_articles_cubit.dart';
-import 'package:wikwok/models/article.dart';
-import 'package:wikwok/widgets/banner.dart';
-import 'package:wikwok/widgets/circular_progress.dart';
+import 'package:wikwok/domain/models/article.dart';
+import 'package:wikwok/presentation/cubits/saved_articles_cubit.dart';
+import 'package:wikwok/presentation/widgets/banner.dart';
+import 'package:wikwok/presentation/widgets/circular_progress.dart';
 
 class SavedArticlesScreen extends StatefulWidget {
   const SavedArticlesScreen({super.key});

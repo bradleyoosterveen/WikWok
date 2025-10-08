@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wikwok/models/article.dart';
-import 'package:wikwok/models/settings.dart';
-import 'package:wikwok/repositories/settings_repository.dart';
-import 'package:wikwok/services/wikipedia_service.dart';
+import 'package:wikwok/data/services/wikipedia_service.dart';
+import 'package:wikwok/domain/models/article.dart';
+import 'package:wikwok/domain/models/settings.dart';
+import 'package:wikwok/domain/repositories/settings_repository.dart';
 
 class ArticleRepository {
   static final ArticleRepository _instance = ArticleRepository._internal();

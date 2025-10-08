@@ -1,6 +1,6 @@
-import 'package:wikwok/cubits/cubit.dart';
-import 'package:wikwok/models/version.dart';
-import 'package:wikwok/repositories/version_repository.dart';
+import 'package:wikwok/domain/models/version.dart';
+import 'package:wikwok/domain/repositories/version_repository.dart';
+import 'package:wikwok/presentation/cubits/cubit.dart';
 
 class UpdateCubit extends WCubit<UpdateState?> {
   UpdateCubit() : super(null);

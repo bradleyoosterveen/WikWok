@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wikwok/cubits/settings_cubit.dart';
-import 'package:wikwok/cubits/update_cubit.dart';
-import 'package:wikwok/pages/article_page.dart';
-import 'package:wikwok/screens/saved_articles_screen.dart';
-import 'package:wikwok/screens/settings_screen.dart';
+import 'package:wikwok/presentation/cubits/settings_cubit.dart';
+import 'package:wikwok/presentation/cubits/update_cubit.dart';
+import 'package:wikwok/presentation/pages/article_page.dart';
+import 'package:wikwok/presentation/screens/saved_articles_screen.dart';
+import 'package:wikwok/presentation/screens/settings_screen.dart';
 
 class ArticlesScreen extends StatelessWidget {
   const ArticlesScreen({super.key});

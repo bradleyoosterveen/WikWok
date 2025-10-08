@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wikwok/services/wikipedia_service.dart';
+import 'package:wikwok/data/services/wikipedia_service.dart';
 
 final _tags = ['integration'];
 

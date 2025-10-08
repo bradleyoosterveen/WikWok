@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:wikwok/widgets/cached_network_image.dart';
+import 'package:wikwok/presentation/widgets/cached_network_image.dart';
 
 class WBanner extends StatelessWidget {
   const WBanner({

@@ -1,6 +1,6 @@
-import 'package:wikwok/cubits/cubit.dart';
-import 'package:wikwok/models/article.dart';
-import 'package:wikwok/repositories/article_repository.dart';
+import 'package:wikwok/domain/models/article.dart';
+import 'package:wikwok/presentation/cubits/cubit.dart';
+import 'package:wikwok/domain/repositories/article_repository.dart';
 
 class SavedArticlesCubit extends WCubit<List<Article>?> {
   SavedArticlesCubit() : super(null);

@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wikwok/cubits/cubit.dart';
 import 'package:wikwok/models/article.dart';
 import 'package:wikwok/repositories/article_repository.dart';
 
-class ArticleCubit extends Cubit<Article?> {
+class ArticleCubit extends WCubit<Article?> {
   ArticleCubit() : super(null);
 
   final _articleRepository = ArticleRepository();

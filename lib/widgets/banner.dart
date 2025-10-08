@@ -20,8 +20,6 @@ class WBanner extends StatelessWidget {
 
   double get _opacity => 0.16;
 
-  Color get _backgroundColor => FThemes.zinc.dark.scaffoldStyle.backgroundColor;
-
   EdgeInsetsGeometry get _padding => fill
       ? EdgeInsets.zero
       : const EdgeInsets.symmetric(horizontal: 24).add(
@@ -30,6 +28,8 @@ class WBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = context.theme.scaffoldStyle.backgroundColor;
+
     return ClipRect(
       clipBehavior: Clip.antiAlias,
       child: Stack(
@@ -57,10 +57,10 @@ class WBanner extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      _backgroundColor,
-                      _backgroundColor.withValues(alpha: 0),
-                      _backgroundColor.withValues(alpha: 0),
-                      _backgroundColor,
+                      backgroundColor,
+                      backgroundColor.withValues(alpha: 0),
+                      backgroundColor.withValues(alpha: 0),
+                      backgroundColor,
                     ],
                     stops: const [0, 0.2, 0.8, 1],
                   ),

@@ -1,10 +1,14 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/cubits/article_cubit.dart';
+import 'package:wikwok/cubits/connectivity_cubit.dart';
 import 'package:wikwok/cubits/save_article_cubit.dart';
+import 'package:wikwok/cubits/settings_cubit.dart';
 import 'package:wikwok/models/article.dart';
+import 'package:wikwok/models/settings.dart';
 import 'package:wikwok/widgets/banner.dart';
 import 'package:wikwok/widgets/circular_progress.dart';
 
@@ -86,9 +90,29 @@ class _ViewState extends State<_View> {
   Widget _content(Article article) => Column(
         children: [
           Expanded(
-            child: WBanner(
-              src: article.imageUrl,
-            ),
+            child: Builder(builder: (context) {
+              final shouldDownloadFullSizeImages = context.select(
+                (SettingsCubit settings) =>
+                    settings.state.shouldDownloadFullSizeImages,
+              );
+
+              final hasWifi = context.select(
+                    (ConnectivityCubit connectivity) =>
+                        connectivity.state?.contains(ConnectivityResult.wifi),
+                  ) ??
+                  false;
+
+              final urlWifiOnly =
+                  hasWifi ? article.originalImageUrl : article.thumbnailUrl;
+
+              return WBanner(
+                src: switch (shouldDownloadFullSizeImages) {
+                  ShouldDownloadFullSizeImages.yes => article.originalImageUrl,
+                  ShouldDownloadFullSizeImages.no => article.thumbnailUrl,
+                  _ => urlWifiOnly,
+                },
+              );
+            }),
           ),
           Padding(
             padding: const EdgeInsets.all(24).subtract(

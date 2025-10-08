@@ -3,7 +3,8 @@ class Article {
   final String subtitle;
   final String title;
   final String content;
-  final String imageUrl;
+  final String thumbnailUrl;
+  final String originalImageUrl;
   final String url;
 
   Article({
@@ -11,7 +12,8 @@ class Article {
     required this.subtitle,
     required this.title,
     required this.content,
-    required this.imageUrl,
+    required this.thumbnailUrl,
+    required this.originalImageUrl,
     required this.url,
   });
 
@@ -20,7 +22,8 @@ class Article {
         subtitle: json['description'] as String,
         title: json['titles']['normalized'] as String,
         content: json['extract'] as String,
-        imageUrl: json['thumbnail']['source'] as String,
+        thumbnailUrl: json['thumbnail']['source'] as String,
+        originalImageUrl: json['originalimage']['source'] as String,
         url: json['content_urls']['mobile']['page'] as String,
       );
 }

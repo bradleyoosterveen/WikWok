@@ -1,5 +1,5 @@
-import 'package:wikwok/cubits/cubit.dart';
-import 'package:wikwok/repositories/article_repository.dart';
+import 'package:wikwok/presentation/cubits/cubit.dart';
+import 'package:wikwok/domain/repositories/article_repository.dart';
 
 class SaveArticleCubit extends WCubit<bool?> {
   SaveArticleCubit() : super(null);

@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wikwok/cubits/current_version_cubit.dart';
-import 'package:wikwok/cubits/settings_cubit.dart';
+import 'package:wikwok/domain/models/settings.dart';
 import 'package:wikwok/gen/assets.gen.dart';
-import 'package:wikwok/models/settings.dart';
+import 'package:wikwok/presentation/cubits/current_version_cubit.dart';
+import 'package:wikwok/presentation/cubits/settings_cubit.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

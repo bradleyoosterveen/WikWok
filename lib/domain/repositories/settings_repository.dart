@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wikwok/models/settings.dart';
+import 'package:wikwok/domain/models/settings.dart';
 
 class SettingsRepository {
   static final SettingsRepository _instance = SettingsRepository._internal();

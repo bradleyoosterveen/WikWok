@@ -1,6 +1,6 @@
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:wikwok/models/version.dart';
-import 'package:wikwok/services/github_service.dart';
+import 'package:wikwok/data/services/github_service.dart';
+import 'package:wikwok/domain/models/version.dart';
 
 class VersionRepository {
   static final VersionRepository _instance = VersionRepository._internal();

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
-import 'package:wikwok/cubits/cubit.dart';
+import 'package:wikwok/presentation/cubits/cubit.dart';
 
 class ConnectivityCubit extends WCubit<List<ConnectivityResult>?> {
   ConnectivityCubit() : super(null);

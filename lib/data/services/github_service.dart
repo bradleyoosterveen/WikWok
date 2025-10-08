@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:wikwok/utils/async_cache.dart';
+import 'package:wikwok/shared/utils/async_cache.dart';
 
 class GithubService {
   static final GithubService _instance = GithubService._internal();

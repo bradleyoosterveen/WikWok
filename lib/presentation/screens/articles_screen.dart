@@ -67,7 +67,7 @@ class _Header extends StatelessWidget {
           FButton.icon(
             style: FButtonStyle.ghost(),
             onPress: () => SettingsScreen.push(context),
-            child: const Icon(FIcons.ellipsisVertical),
+            child: const Icon(FIcons.settings2),
           ),
         ],
       ),

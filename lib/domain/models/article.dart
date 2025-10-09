@@ -1,3 +1,5 @@
+import 'package:share_plus/share_plus.dart';
+
 class Article {
   final int id;
   final String subtitle;
@@ -26,4 +28,9 @@ class Article {
         originalImageUrl: json['originalimage']['source'] as String,
         url: json['content_urls']['mobile']['page'] as String,
       );
+
+  void share() => SharePlus.instance.share(ShareParams(
+        title: title,
+        uri: Uri.parse(url),
+      ));
 }

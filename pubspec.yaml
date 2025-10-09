@@ -23,6 +23,7 @@ dependencies:
   forui: ^0.16.0
   flutter_svg: ^2.2.1
   connectivity_plus: ^7.0.0
+  share_plus: ^11.1.0
 
 dev_dependencies:
   flutter_test:

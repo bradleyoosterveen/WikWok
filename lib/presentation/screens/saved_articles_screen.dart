@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/domain/models/article.dart';
 import 'package:wikwok/presentation/cubits/saved_articles_cubit.dart';
+import 'package:wikwok/presentation/screens/article_screen.dart';
 import 'package:wikwok/presentation/widgets/banner.dart';
+import 'package:wikwok/presentation/widgets/border.dart';
 import 'package:wikwok/presentation/widgets/circular_progress.dart';
 
 class SavedArticlesScreen extends StatefulWidget {
@@ -56,35 +57,15 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                             shrinkWrap: true,
                             padding: EdgeInsets.zero,
                             itemCount: articles.length,
-                            itemBuilder: (context, index) => ListTile(
-                              onTap: () =>
-                                  launchUrl(Uri.parse(articles[index].url)),
-                              leading: AspectRatio(
-                                aspectRatio: 1,
-                                child: Builder(
-                                  builder: (context) => WBanner(
-                                    src: articles[index].thumbnailUrl,
-                                    fill: true,
-                                  ),
-                                ),
-                              ),
-                              textColor: Colors.white,
-                              title: Text(articles[index].title),
-                              subtitle: Text(articles[index].subtitle),
-                              trailing: FButton.icon(
-                                style: FButtonStyle.ghost(),
-                                onPress: () => context
-                                    .read<SavedArticlesCubit>()
-                                    .unsave(articles[index].title),
-                                child: const Icon(FIcons.trash),
-                              ),
+                            itemBuilder: (context, index) => _ListItem(
+                              article: articles[index],
                             ),
                           ),
                         )
                       : FCard(
                           style: (style) => style.copyWith(
                             decoration: style.decoration.copyWith(
-                              border: Border.all(width: 0),
+                              border: WBorder.zero,
                             ),
                           ),
                           title: const Text('Your library is empty'),
@@ -100,6 +81,36 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ListItem extends StatelessWidget {
+  const _ListItem({
+    required this.article,
+  });
+
+  final Article article;
+
+  @override
+  Widget build(BuildContext context) {
+    return FItem(
+      prefix: SizedBox(
+        width: 64,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: WBanner(
+            src: article.thumbnailUrl,
+            fill: true,
+            showGradient: false,
+            showBackground: false,
+            shouldWrapInSafeArea: false,
+          ),
+        ),
+      ),
+      title: Text(article.title),
+      subtitle: Text(article.subtitle),
+      onPress: () => ArticleScreen.push(context, article: article),
     );
   }
 }

@@ -174,13 +174,10 @@ class _ViewState extends State<_View> {
                     ),
                     const SizedBox(height: 16),
                     FCard(
-                      subtitle: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          article.subtitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      subtitle: Text(
+                        article.subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       title: Text(article.title),
                       child: Text(

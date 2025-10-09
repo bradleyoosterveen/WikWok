@@ -9,13 +9,13 @@ import 'package:wikwok/presentation/cubits/current_version_cubit.dart';
 import 'package:wikwok/presentation/cubits/settings_cubit.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen._({super.key});
 
-  static push(BuildContext context) =>
-      Navigator.of(context).push(SettingsScreen._route());
-
-  static MaterialPageRoute _route() =>
-      MaterialPageRoute(builder: (context) => const SettingsScreen());
+  static push(BuildContext context) => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const SettingsScreen._(),
+        ),
+      );
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -28,10 +28,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       childPad: false,
       footer: Padding(
         padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).systemGestureInsets.bottom,
-            left: 24.0,
-            right: 24.0,
-            top: 24.0),
+          bottom: MediaQuery.of(context).systemGestureInsets.bottom,
+          left: 24.0,
+          right: 24.0,
+          top: 24.0,
+        ),
         child: BlocBuilder<CurrentVersionCubit, String?>(
           builder: (context, state) => Column(
             mainAxisSize: MainAxisSize.min,

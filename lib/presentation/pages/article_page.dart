@@ -159,9 +159,7 @@ class _ViewState extends State<_View> {
                         const SizedBox(width: 8),
                         FButton.icon(
                           style: FButtonStyle.ghost(),
-                          onPress: () => context
-                              .read<ArticleCubit>()
-                              .copyToClipboard(article.title),
+                          onPress: () => article.share(),
                           child: const Icon(FIcons.share2),
                         ),
                         const SizedBox(width: 8),

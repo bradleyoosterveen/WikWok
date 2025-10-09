@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -62,9 +61,7 @@ class _ArticleScreenState extends State<ArticleScreen>
             const SizedBox(height: 16),
             FButton(
               style: FButtonStyle.outline(),
-              onPress: () => Clipboard.setData(
-                ClipboardData(text: widget.article.url),
-              ),
+              onPress: () => widget.article.share(),
               child: const Text('Share'),
             ),
           ],

@@ -1,41 +1,61 @@
+import 'package:wikwok/core/exception_handler.dart';
 import 'package:wikwok/domain/models/article.dart';
-import 'package:wikwok/presentation/cubits/cubit.dart';
 import 'package:wikwok/domain/repositories/article_repository.dart';
+import 'package:wikwok/presentation/cubits/cubit.dart';
 
-class SavedArticlesCubit extends WCubit<List<Article>?> {
-  SavedArticlesCubit() : super(null);
+class SavedArticlesCubit extends WCubit<SavedArticlesState> {
+  SavedArticlesCubit() : super(const SavedArticlesLoadingState());
 
   final _articleRepository = ArticleRepository();
 
   Future<void> get() async {
-    final saved = await _articleRepository.getSavedArticles();
+    emit(const SavedArticlesLoadingState());
 
-    final articles = saved
-        .map((title) => _articleRepository.getArticleByTitle(title))
-        .toList();
+    try {
+      final saved = await _articleRepository.getSavedArticles();
 
-    for (var i = 0; i < articles.length; i++) {
-      if (articles[i] == null) {
-        articles[i] = await _articleRepository.fetchArticleByTitle(saved[i]);
+      final articles = saved
+          .map((title) => _articleRepository.getArticleByTitle(title))
+          .toList();
+
+      for (var i = 0; i < articles.length; i++) {
+        if (articles[i] == null) {
+          articles[i] = await _articleRepository.fetchArticleByTitle(saved[i]);
+        }
       }
+
+      final filteredArticles = articles.whereType<Article>().toList();
+
+      if (filteredArticles.isEmpty) {
+        return emit(const SavedArticlesEmptyState());
+      }
+
+      emit(SavedArticlesLoadedState(filteredArticles));
+    } on Exception catch (e) {
+      WExceptionHandler().handleException(e);
+      emit(const SavedArticlesErrorState());
     }
-
-    emit(articles.whereType<Article>().toList());
   }
+}
 
-  Future<void> unsave(String title) async {
-    await _articleRepository.unsaveArticle(title);
+abstract class SavedArticlesState {
+  const SavedArticlesState();
+}
 
-    await get();
-  }
+class SavedArticlesLoadingState extends SavedArticlesState {
+  const SavedArticlesLoadingState();
+}
 
-  Future<void> unsaveAll() async {
-    final saved = await _articleRepository.getSavedArticles();
+class SavedArticlesLoadedState extends SavedArticlesState {
+  final List<Article> articles;
 
-    for (var title in saved) {
-      await _articleRepository.unsaveArticle(title);
-    }
+  const SavedArticlesLoadedState(this.articles);
+}
 
-    await get();
-  }
+class SavedArticlesEmptyState extends SavedArticlesState {
+  const SavedArticlesEmptyState();
+}
+
+class SavedArticlesErrorState extends SavedArticlesState {
+  const SavedArticlesErrorState();
 }

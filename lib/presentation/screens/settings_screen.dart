@@ -11,9 +11,9 @@ import 'package:wikwok/presentation/cubits/settings_cubit.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen._({super.key});
 
-  static push(BuildContext context) => Navigator.of(context).push(
+  static push(BuildContext context, {Key? key}) => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const SettingsScreen._(),
+          builder: (context) => SettingsScreen._(key: key),
         ),
       );
 
@@ -33,7 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           right: 24.0,
           top: 24.0,
         ),
-        child: BlocBuilder<CurrentVersionCubit, String?>(
+        child: BlocBuilder<CurrentVersionCubit, CurrentVersionState>(
           builder: (context, state) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -52,7 +52,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   FLabel(
                     axis: Axis.vertical,
                     label: const Text('Current version'),
-                    child: Text(state ?? '-'),
+                    child: switch (state) {
+                      CurrentVersionLoadedState state =>
+                        Text(state.version.toString()),
+                      CurrentVersionErrorState _ => const Text('Error'),
+                      _ => const Text('Loading...'),
+                    },
                   ),
                   SizedBox(
                     height: 32,

@@ -1,4 +1,5 @@
-import 'package:dio/dio.dart';
+import 'package:wikwok/core/exception_handler.dart';
+import 'package:wikwok/core/http_client.dart';
 import 'package:wikwok/shared/utils/async_cache.dart';
 
 class GithubService {
@@ -8,19 +9,24 @@ class GithubService {
 
   GithubService._internal();
 
-  final _dio = Dio();
+  final _httpClient =
+      WHttpClient().getClient(baseUrl: 'https://api.github.com/');
 
   final _asyncCache = AsyncCache();
-
-  final _baseUrl = 'https://api.github.com';
 
   Future<Map<String, dynamic>> fetchLatestRelease() async => _asyncCache.handle(
       key: 'GithubService.fetchLatestRelease',
       action: () async {
-        final response = await _dio.get(
-          '$_baseUrl/repos/bradleyoosterveen/wikwok/releases/latest',
-        );
+        try {
+          final response = await _httpClient.get(
+            'repos/bradleyoosterveen/wikwok/releases/latest',
+          );
 
-        return response.data as Map<String, dynamic>;
+          return response.data as Map<String, dynamic>;
+        } on Exception catch (e) {
+          WExceptionHandler().handleException(e);
+
+          rethrow;
+        }
       });
 }

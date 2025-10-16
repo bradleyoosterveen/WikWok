@@ -12,6 +12,7 @@ import 'package:wikwok/presentation/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/presentation/cubits/settings_cubit.dart';
 import 'package:wikwok/presentation/widgets/banner.dart';
 import 'package:wikwok/presentation/widgets/circular_progress.dart';
+import 'package:wikwok/presentation/widgets/error_retry_widget.dart';
 import 'package:wikwok/presentation/widgets/toggle_save_animation.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -42,10 +43,10 @@ class _ArticlePageState extends State<ArticlePage> {
       child: Scaffold(
         body: MultiBlocListener(
           listeners: [
-            BlocListener<ArticleCubit, Article?>(
+            BlocListener<ArticleCubit, ArticleState>(
               listener: (context, state) => switch (state) {
-                Article article =>
-                  context.read<SaveArticleCubit>().get(article.title),
+                ArticleLoadedState state =>
+                  context.read<SaveArticleCubit>().get(state.article.title),
                 _ => {},
               },
             ),
@@ -87,12 +88,23 @@ class _ViewState extends State<_View> with TickerProviderStateMixin {
   }
 
   @override
+  void deactivate() {
+    _saveAnimationController.stop();
+    _unsaveAnimationController.stop();
+    super.deactivate();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArticleCubit, Article?>(
+    return BlocBuilder<ArticleCubit, ArticleState>(
       builder: (context, state) => AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         child: switch (state) {
-          Article article => _content(article),
+          ArticleLoadedState state => _content(state.article),
+          ArticleErrorState _ => WErrorRetryWidget(
+              title: 'Something went wrong fetching this article.',
+              onRetry: () => context.read<ArticleCubit>().fetch(widget.index),
+            ),
           _ => const WCircularProgress(),
         },
       ),
@@ -101,9 +113,9 @@ class _ViewState extends State<_View> with TickerProviderStateMixin {
 
   Widget _content(Article article) => MultiBlocListener(
         listeners: [
-          BlocListener<SavedArticlesCubit, List<Article>?>(
+          BlocListener<SavedArticlesCubit, SavedArticlesState>(
             listener: (context, state) => switch (state) {
-              List<Article> _ =>
+              SavedArticlesLoadedState _ =>
                 context.read<SaveArticleCubit>().get(article.title),
               _ => {},
             },
@@ -181,21 +193,16 @@ class _ViewState extends State<_View> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        BlocBuilder<SaveArticleCubit, bool?>(
+                        BlocBuilder<SaveArticleCubit, SaveArticleState>(
                           builder: (context, state) => switch (state) {
-                            true => FButton.icon(
+                            SaveArticleLoadedState state => FButton.icon(
                                 style: FButtonStyle.ghost(),
                                 onPress: () => context
                                     .read<SaveArticleCubit>()
-                                    .unsave(article.title),
-                                child: const Icon(FIcons.bookMarked),
-                              ),
-                            false => FButton.icon(
-                                style: FButtonStyle.ghost(),
-                                onPress: () => context
-                                    .read<SaveArticleCubit>()
-                                    .save(article.title),
-                                child: const Icon(FIcons.book),
+                                    .toggle(article.title),
+                                child: Icon(
+                                  state.saved ? FIcons.bookMarked : FIcons.book,
+                                ),
                               ),
                             _ => const SizedBox.shrink(),
                           },

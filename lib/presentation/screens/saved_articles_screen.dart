@@ -49,31 +49,30 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              BlocBuilder<SavedArticlesCubit, List<Article>?>(
+              BlocBuilder<SavedArticlesCubit, SavedArticlesState>(
                 builder: (context, state) => switch (state) {
-                  List<Article> articles => articles.isNotEmpty
-                      ? Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount: articles.length,
-                            itemBuilder: (context, index) => _ListItem(
-                              article: articles[index],
-                            ),
-                          ),
-                        )
-                      : FCard(
-                          style: (style) => style.copyWith(
-                            decoration: style.decoration.copyWith(
-                              border: WBorder.zero,
-                            ),
-                          ),
-                          title: const Text('Your library is empty'),
-                          subtitle: const SizedBox.shrink(),
-                          child: const Text(
-                            'Add some articles to your library.',
-                          ),
+                  SavedArticlesLoadedState state => Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemCount: state.articles.length,
+                        itemBuilder: (context, index) => _ListItem(
+                          article: state.articles[index],
                         ),
+                      ),
+                    ),
+                  SavedArticlesEmptyState _ => FCard(
+                      style: (style) => style.copyWith(
+                        decoration: style.decoration.copyWith(
+                          border: WBorder.zero,
+                        ),
+                      ),
+                      title: const Text('Your library is empty'),
+                      subtitle: const SizedBox.shrink(),
+                      child: const Text(
+                        'Add some articles to your library.',
+                      ),
+                    ),
                   _ => const WCircularProgress(),
                 },
               ),

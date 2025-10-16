@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,8 +9,10 @@ class WCubit<T> extends Cubit<T> {
   @override
   void onChange(Change<T> change) {
     if (kDebugMode) {
-      // ignore: avoid_print
-      print('$runtimeType ${change.currentState} -> ${change.nextState}');
+      developer.log(
+        '$runtimeType ${change.currentState} -> ${change.nextState}',
+        name: 'State change',
+      );
     }
     super.onChange(change);
   }

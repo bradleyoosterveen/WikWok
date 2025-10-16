@@ -1,34 +1,61 @@
+import 'package:wikwok/core/exception_handler.dart';
 import 'package:wikwok/domain/repositories/article_repository.dart';
 import 'package:wikwok/presentation/cubits/cubit.dart';
 
-class SaveArticleCubit extends WCubit<bool?> {
-  SaveArticleCubit() : super(null);
+class SaveArticleCubit extends WCubit<SaveArticleState> {
+  SaveArticleCubit() : super(const SaveArticleLoadingState());
 
   final _articleRepository = ArticleRepository();
 
-  Future<void> get(String title) async => emit(
-        await _articleRepository.isArticleSaved(title),
-      );
+  Future<void> get(String title) async {
+    emit(const SaveArticleLoadingState());
 
-  Future<void> save(String title) async => emit(
-        await _articleRepository.saveArticle(title),
-      );
+    try {
+      final saved = await _articleRepository.isArticleSaved(title);
 
-  Future<void> unsave(String title) async => emit(
-        await _articleRepository.unsaveArticle(title),
-      );
+      emit(SaveArticleLoadedState(saved));
+      return;
+    } on Exception catch (e) {
+      WExceptionHandler().handleException(e);
+      emit(const SaveArticleErrorState());
+    }
+  }
 
   Future<bool> toggle(String title) async {
-    final saved = await _articleRepository.isArticleSaved(title);
+    try {
+      final saved = await _articleRepository.isArticleSaved(title);
 
-    if (saved) {
-      await _articleRepository.unsaveArticle(title);
-    } else {
-      await _articleRepository.saveArticle(title);
+      if (saved) {
+        await _articleRepository.unsaveArticle(title);
+      } else {
+        await _articleRepository.saveArticle(title);
+      }
+
+      emit(SaveArticleLoadedState(!saved));
+
+      return !saved;
+    } catch (e) {
+      emit(const SaveArticleErrorState());
+
+      return false;
     }
-
-    emit(!saved);
-
-    return !saved;
   }
+}
+
+abstract class SaveArticleState {
+  const SaveArticleState();
+}
+
+class SaveArticleLoadingState extends SaveArticleState {
+  const SaveArticleLoadingState();
+}
+
+class SaveArticleLoadedState extends SaveArticleState {
+  final bool saved;
+
+  const SaveArticleLoadedState(this.saved);
+}
+
+class SaveArticleErrorState extends SaveArticleState {
+  const SaveArticleErrorState();
 }

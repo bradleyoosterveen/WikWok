@@ -12,6 +12,7 @@ import 'package:wikwok/presentation/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/presentation/cubits/settings_cubit.dart';
 import 'package:wikwok/presentation/widgets/banner.dart';
 import 'package:wikwok/presentation/widgets/circular_progress.dart';
+import 'package:wikwok/presentation/widgets/toggle_save_animation.dart';
 
 class ArticlePage extends StatefulWidget {
   const ArticlePage({
@@ -67,12 +68,22 @@ class _View extends StatefulWidget {
   State<_View> createState() => _ViewState();
 }
 
-class _ViewState extends State<_View> {
+class _ViewState extends State<_View> with TickerProviderStateMixin {
+  late final _saveAnimationController = AnimationController(vsync: this);
+  late final _unsaveAnimationController = AnimationController(vsync: this);
+
   @override
   void initState() {
     super.initState();
 
     context.read<ArticleCubit>().fetch(widget.index);
+  }
+
+  @override
+  void dispose() {
+    _saveAnimationController.dispose();
+    _unsaveAnimationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -101,30 +112,51 @@ class _ViewState extends State<_View> {
         child: Column(
           children: [
             Expanded(
-              child: Builder(builder: (context) {
-                final shouldDownloadFullSizeImages = context.select(
-                  (SettingsCubit settings) =>
-                      settings.state.shouldDownloadFullSizeImages,
-                );
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onDoubleTap: () async {
+                  final saved = await context
+                      .read<SaveArticleCubit>()
+                      .toggle(article.title);
 
-                final hasWifi = context.select(
-                      (ConnectivityCubit connectivity) =>
-                          connectivity.state?.contains(ConnectivityResult.wifi),
-                    ) ??
-                    false;
+                  if (saved) {
+                    _saveAnimationController.forward(from: 0);
+                  } else {
+                    _unsaveAnimationController.forward(from: 0);
+                  }
+                },
+                child: Stack(
+                  children: [
+                    Builder(builder: (context) {
+                      final shouldDownloadFullSizeImages = context.select(
+                        (SettingsCubit settings) =>
+                            settings.state.shouldDownloadFullSizeImages,
+                      );
 
-                final urlWifiOnly =
-                    hasWifi ? article.originalImageUrl : article.thumbnailUrl;
+                      final hasWifi = context.select(
+                            (ConnectivityCubit connectivity) => connectivity
+                                .state
+                                ?.contains(ConnectivityResult.wifi),
+                          ) ??
+                          false;
 
-                return WBanner(
-                  src: switch (shouldDownloadFullSizeImages) {
-                    ShouldDownloadFullSizeImages.yes =>
-                      article.originalImageUrl,
-                    ShouldDownloadFullSizeImages.no => article.thumbnailUrl,
-                    _ => urlWifiOnly,
-                  },
-                );
-              }),
+                      final urlWifiOnly = hasWifi
+                          ? article.originalImageUrl
+                          : article.thumbnailUrl;
+
+                      return WBanner(
+                        src: switch (shouldDownloadFullSizeImages) {
+                          ShouldDownloadFullSizeImages.yes =>
+                            article.originalImageUrl,
+                          ShouldDownloadFullSizeImages.no =>
+                            article.thumbnailUrl,
+                          _ => urlWifiOnly,
+                        },
+                      );
+                    }),
+                  ],
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(24).subtract(
@@ -137,6 +169,18 @@ class _ViewState extends State<_View> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              WToggleSaveAnimation.save(
+                                controller: _saveAnimationController,
+                              ),
+                              WToggleSaveAnimation.unsave(
+                                controller: _unsaveAnimationController,
+                              ),
+                            ],
+                          ),
+                        ),
                         BlocBuilder<SaveArticleCubit, bool?>(
                           builder: (context, state) => switch (state) {
                             true => FButton.icon(

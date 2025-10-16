@@ -19,6 +19,20 @@ class WExceptionHandler {
 
   String _onException(Exception e) => 'A generic exception occurred: $e';
 
-  String _onDioException(DioException e) =>
-      '${e.requestOptions.uri.toString()} returned ${e.response?.statusCode}';
+  String _onDioException(DioException e) {
+    final url = e.requestOptions.uri.toString();
+
+    final isTimeout = switch (e) {
+      _ when e.type == DioExceptionType.connectionTimeout => true,
+      _ when e.type == DioExceptionType.receiveTimeout => true,
+      _ when e.type == DioExceptionType.sendTimeout => true,
+      _ => false,
+    };
+
+    if (isTimeout) {
+      return '$url timed out';
+    }
+
+    return '$url returned ${e.response?.statusCode}';
+  }
 }

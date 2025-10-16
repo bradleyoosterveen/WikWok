@@ -19,8 +19,11 @@ class AsyncCache {
       completer.complete(result);
     } catch (e) {
       completer.completeError(e);
+      invalidate(key);
     }
 
     return completer.future;
   }
+
+  void invalidate(String key) => _completers.remove(key);
 }

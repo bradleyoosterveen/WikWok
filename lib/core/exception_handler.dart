@@ -33,6 +33,10 @@ class WExceptionHandler {
       return '$url timed out';
     }
 
+    if (e.type == DioExceptionType.connectionError) {
+      return '$url failed to connect';
+    }
+
     return '$url returned ${e.response?.statusCode}';
   }
 }

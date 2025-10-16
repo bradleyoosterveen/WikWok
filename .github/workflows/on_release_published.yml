@@ -3,7 +3,6 @@ name: On release published
 on:
   release:
     types: [ published, edited ]
-  pull_request:
 
 permissions:
   contents: write
@@ -58,9 +57,9 @@ jobs:
         with:
           name: apk
 
-      # - name: Upload APK to release
-      #   run: |
-      #     gh release upload ${{github.event.release.tag_name}} wikwok-${{ env.APP_VERSION }}.apk
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   shell: bash
+      - name: Upload APK to release
+        run: |
+          gh release upload ${{github.event.release.tag_name}} wikwok-${{ env.APP_VERSION }}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash

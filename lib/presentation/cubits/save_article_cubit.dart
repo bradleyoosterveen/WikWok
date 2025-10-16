@@ -14,7 +14,6 @@ class SaveArticleCubit extends WCubit<SaveArticleState> {
       final saved = await _articleRepository.isArticleSaved(title);
 
       emit(SaveArticleLoadedState(saved));
-      return;
     } on Exception catch (e) {
       WExceptionHandler().handleException(e);
       emit(const SaveArticleErrorState());
@@ -34,7 +33,8 @@ class SaveArticleCubit extends WCubit<SaveArticleState> {
       emit(SaveArticleLoadedState(!saved));
 
       return !saved;
-    } catch (e) {
+    } on Exception catch (e) {
+      WExceptionHandler().handleException(e);
       emit(const SaveArticleErrorState());
 
       return false;

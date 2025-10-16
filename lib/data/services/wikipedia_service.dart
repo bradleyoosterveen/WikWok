@@ -31,7 +31,7 @@ class WikipediaService {
           key: title,
           action: () async {
             try {
-              final response = await _httpClient.get('/page/summary/$title');
+              final response = await _httpClient.get('page/summary/$title');
 
               return response.data as Map<String, dynamic>;
             } on Exception catch (e) {

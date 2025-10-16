@@ -7,6 +7,7 @@ import 'package:wikwok/presentation/screens/article_screen.dart';
 import 'package:wikwok/presentation/widgets/banner.dart';
 import 'package:wikwok/presentation/widgets/border.dart';
 import 'package:wikwok/presentation/widgets/circular_progress.dart';
+import 'package:wikwok/presentation/widgets/error_retry_widget.dart';
 
 class SavedArticlesScreen extends StatefulWidget {
   const SavedArticlesScreen({super.key});
@@ -73,7 +74,12 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
                         'Add some articles to your library.',
                       ),
                     ),
-                  _ => const WCircularProgress(),
+                  SavedArticlesErrorState _ => WErrorRetryWidget(
+                      title: 'Something went wrong fetching your library.',
+                      onRetry: () => context.read<SavedArticlesCubit>().get(),
+                    ),
+                  SavedArticlesLoadingState _ => const WCircularProgress(),
+                  _ => const SizedBox.shrink(),
                 },
               ),
             ],

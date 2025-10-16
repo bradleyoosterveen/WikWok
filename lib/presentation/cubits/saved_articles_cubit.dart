@@ -9,6 +9,8 @@ class SavedArticlesCubit extends WCubit<SavedArticlesState> {
   final _articleRepository = ArticleRepository();
 
   Future<void> get() async {
+    emit(const SavedArticlesLoadingState());
+
     try {
       final saved = await _articleRepository.getSavedArticles();
 
@@ -22,7 +24,13 @@ class SavedArticlesCubit extends WCubit<SavedArticlesState> {
         }
       }
 
-      emit(SavedArticlesLoadedState(articles.whereType<Article>().toList()));
+      final filteredArticles = articles.whereType<Article>().toList();
+
+      if (filteredArticles.isEmpty) {
+        return emit(const SavedArticlesEmptyState());
+      }
+
+      emit(SavedArticlesLoadedState(filteredArticles));
     } on Exception catch (e) {
       WExceptionHandler().handleException(e);
       emit(const SavedArticlesErrorState());

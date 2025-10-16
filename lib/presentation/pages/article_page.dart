@@ -12,6 +12,7 @@ import 'package:wikwok/presentation/cubits/saved_articles_cubit.dart';
 import 'package:wikwok/presentation/cubits/settings_cubit.dart';
 import 'package:wikwok/presentation/widgets/banner.dart';
 import 'package:wikwok/presentation/widgets/circular_progress.dart';
+import 'package:wikwok/presentation/widgets/error_retry_widget.dart';
 import 'package:wikwok/presentation/widgets/toggle_save_animation.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -100,7 +101,10 @@ class _ViewState extends State<_View> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 300),
         child: switch (state) {
           ArticleLoadedState state => _content(state.article),
-          ArticleErrorState _ => _ArticleErrorStateWidget(index: widget.index),
+          ArticleErrorState _ => WErrorRetryWidget(
+              title: 'Something went wrong fetching this article.',
+              onRetry: () => context.read<ArticleCubit>().fetch(widget.index),
+            ),
           _ => const WCircularProgress(),
         },
       ),
@@ -239,34 +243,4 @@ class _ViewState extends State<_View> with TickerProviderStateMixin {
           ],
         ),
       );
-}
-
-class _ArticleErrorStateWidget extends StatelessWidget {
-  const _ArticleErrorStateWidget({
-    required this.index,
-  });
-
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(FIcons.circleSlash),
-            const SizedBox(height: 16),
-            const Text('Something went wrong fetching this article.'),
-            const SizedBox(height: 16),
-            FButton(
-              onPress: () => context.read<ArticleCubit>().fetch(index),
-              child: const Text('Try again'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

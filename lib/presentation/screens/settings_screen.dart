@@ -9,11 +9,11 @@ import 'package:wikwok/presentation/cubits/current_version_cubit.dart';
 import 'package:wikwok/presentation/cubits/settings_cubit.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen._();
+  const SettingsScreen._({super.key});
 
-  static push(BuildContext context) => Navigator.of(context).push(
+  static push(BuildContext context, {Key? key}) => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => const SettingsScreen._(),
+          builder: (context) => SettingsScreen._(key: key),
         ),
       );
 

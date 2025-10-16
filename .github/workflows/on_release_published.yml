@@ -52,6 +52,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Set APP_VERSION
+        run: |
+          VERSION=${{ github.ref_name }}
+          APP_VERSION=${VERSION#v}
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+
       - name: Download artifact
         uses: actions/download-artifact@master
         with:

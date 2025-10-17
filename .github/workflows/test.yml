@@ -30,8 +30,8 @@ jobs:
 
       - name: Set up keystore
         run: |
-          echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > android/keystore.jks
-          echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
+          echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > android/app/keystore.jks
+          echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/app/key.properties
 
       - name: '📦 Build apk'
         run: |

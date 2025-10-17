@@ -12,29 +12,48 @@ class SavedArticlesCubit extends WCubit<SavedArticlesState> {
     emit(const SavedArticlesLoadingState());
 
     try {
-      final saved = await _articleRepository.getSavedArticles();
+      final articles = await _getArticles();
 
-      final articles = saved
-          .map((title) => _articleRepository.getArticleByTitle(title))
-          .toList();
-
-      for (var i = 0; i < articles.length; i++) {
-        if (articles[i] == null) {
-          articles[i] = await _articleRepository.fetchArticleByTitle(saved[i]);
-        }
-      }
-
-      final filteredArticles = articles.whereType<Article>().toList();
-
-      if (filteredArticles.isEmpty) {
+      if (articles.isEmpty) {
         return emit(const SavedArticlesEmptyState());
       }
 
-      emit(SavedArticlesLoadedState(filteredArticles));
+      emit(SavedArticlesLoadedState(articles));
     } on Exception catch (e) {
       WExceptionHandler().handleException(e);
       emit(const SavedArticlesErrorState());
     }
+  }
+
+  Future<void> deleteAll() async {
+    try {
+      final saved = await _articleRepository.getSavedArticles();
+
+      for (var title in saved) {
+        await _articleRepository.unsaveArticle(title);
+      }
+
+      get();
+    } on Exception catch (e) {
+      WExceptionHandler().handleException(e);
+      emit(const SavedArticlesErrorState());
+    }
+  }
+
+  Future<List<Article>> _getArticles() async {
+    final saved = await _articleRepository.getSavedArticles();
+
+    final articles = saved
+        .map((title) => _articleRepository.getArticleByTitle(title))
+        .toList();
+
+    for (var i = 0; i < articles.length; i++) {
+      if (articles[i] == null) {
+        articles[i] = await _articleRepository.fetchArticleByTitle(saved[i]);
+      }
+    }
+
+    return articles.whereType<Article>().toList();
   }
 }
 

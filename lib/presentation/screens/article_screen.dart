@@ -101,7 +101,11 @@ class _ArticleScreenState extends State<ArticleScreen>
                   children: [
                     FItem(
                       prefix: const Icon(FIcons.x),
-                      title: const Text('Remove from library'),
+                      title: const Text(
+                        'Remove from library (permanent)',
+                        overflow: TextOverflow.visible,
+                        softWrap: true,
+                      ),
                       onPress: () {
                         context
                             .read<SaveArticleCubit>()

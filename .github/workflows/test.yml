@@ -37,10 +37,10 @@ jobs:
         run: |
           flutter build apk --release --target-platform android-arm64
           mv build/app/outputs/flutter-apk/app-release.apk .
-          mv app-release.apk wikwok-${{ env.APP_VERSION }}.apk
+          mv app-release.apk wikwok.apk
 
       - name: Upload artifact
         uses: actions/upload-artifact@master
         with:
           name: apk
-          path: wikwok-${{ env.APP_VERSION }}.apk
+          path: wikwok.apk

@@ -39,7 +39,7 @@ android {
 
     signingConfigs {
         create("release") {
-            def keystoreProperties = loadKeystoreProperties('./key.properties')
+            def keystoreProperties = loadKeystoreProperties('key.properties')
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null

@@ -34,7 +34,7 @@ jobs:
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
           echo $KEYSTORE_JKS | base64 -d > android/app/keystore.jks
-          echo $KEY_PROPERTIES | base64 -d > android/app/key.properties
+          echo $KEY_PROPERTIES | base64 -d > android/key.properties
 
       - name: '📦 Build apk'
         run: |

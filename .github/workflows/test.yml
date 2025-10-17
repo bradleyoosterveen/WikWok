@@ -1,0 +1,46 @@
+name: Test
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set APP_VERSION
+        run: |
+          VERSION=${{ github.ref_name }}
+          APP_VERSION=${VERSION#v}
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.35.5
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Delete test files
+        run: find . -name '*_test.dart' -delete
+
+      - name: Set up keystore
+        run: |
+          echo ${{ secrets.KEYSTORE_JKS | base64decode }} > keystore.jks
+          echo ${{ secrets.KEY_PROPERTIES | base64decode }} >> key.properties
+
+      - name: '📦 Build apk'
+        run: |
+          flutter build apk --release --target-platform android-arm64
+          mv build/app/outputs/flutter-apk/app-release.apk .
+          mv app-release.apk wikwok-${{ env.APP_VERSION }}.apk
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: apk
+          path: wikwok-${{ env.APP_VERSION }}.apk

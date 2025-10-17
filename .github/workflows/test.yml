@@ -29,9 +29,12 @@ jobs:
         run: find . -name '*_test.dart' -delete
 
       - name: Set up keystore
+        env:
+          KEYSTORE_JKS: ${{ secrets.KEYSTORE_JKS }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
-          echo "${{ secrets.KEYSTORE_JKS }}" | base64 --decode > android/app/keystore.jks
-          echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/app/key.properties
+          echo $KEYSTORE_JKS | base64 -d > android/app/keystore.jks
+          echo $KEY_PROPERTIES | base64 -d > android/app/key.properties
 
       - name: '📦 Build apk'
         run: |

@@ -117,6 +117,8 @@ class _ViewState extends State<_View> with TickerProviderStateMixin {
             listener: (context, state) => switch (state) {
               SavedArticlesLoadedState _ =>
                 context.read<SaveArticleCubit>().get(article.title),
+              SavedArticlesEmptyState _ =>
+                context.read<SaveArticleCubit>().get(article.title),
               _ => {},
             },
           ),

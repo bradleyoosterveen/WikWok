@@ -22,7 +22,10 @@ class SavedArticlesScreen extends StatefulWidget {
   State<SavedArticlesScreen> createState() => _SavedArticlesScreenState();
 }
 
-class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
+class _SavedArticlesScreenState extends State<SavedArticlesScreen>
+    with TickerProviderStateMixin {
+  late final _popoverController = FPopoverController(vsync: this);
+
   @override
   void initState() {
     super.initState();
@@ -33,16 +36,56 @@ class _SavedArticlesScreenState extends State<SavedArticlesScreen> {
   @override
   Widget build(BuildContext context) {
     return FScaffold(
-      header: FHeader.nested(
-        prefixes: [
-          FButton.icon(
-            style: FButtonStyle.ghost(),
-            child: const Icon(FIcons.arrowLeft),
-            onPress: () => Navigator.pop(context),
-          ),
-        ],
-        title: const Text('Library'),
-      ),
+      header: Builder(builder: (context) {
+        final hasArticles = context.watch<SavedArticlesCubit>().state
+            is SavedArticlesLoadedState;
+
+        return FHeader.nested(
+          prefixes: [
+            FButton.icon(
+              style: FButtonStyle.ghost(),
+              child: const Icon(FIcons.arrowLeft),
+              onPress: () => Navigator.pop(context),
+            ),
+          ],
+          suffixes: [
+            if (hasArticles) ...[
+              FPopoverMenu(
+                popoverController: _popoverController,
+                menuAnchor: Alignment.topRight,
+                childAnchor: Alignment.bottomRight,
+                menu: [
+                  FItemGroup(
+                    children: [
+                      FItem(
+                        prefix: const Icon(FIcons.x),
+                        title: const Text(
+                          'Remove all from library (permanent)',
+                          overflow: TextOverflow.visible,
+                          softWrap: true,
+                        ),
+                        onPress: () async {
+                          await _popoverController.hide();
+
+                          if (!context.mounted) return;
+
+                          context.read<SavedArticlesCubit>().deleteAll();
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+                child: FButton.icon(
+                  style: FButtonStyle.ghost(),
+                  child: const Icon(FIcons.ellipsisVertical),
+                  onPress: () => _popoverController.show(),
+                ),
+              ),
+            ],
+          ],
+          title: const Text('Library'),
+        );
+      }),
       child: SafeArea(
         top: false,
         child: Material(

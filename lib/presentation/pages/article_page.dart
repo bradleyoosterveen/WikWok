@@ -1,6 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:forui/forui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wikwok/domain/models/article.dart';
@@ -29,11 +30,6 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -43,6 +39,12 @@ class _ArticlePageState extends State<ArticlePage> {
       child: Scaffold(
         body: MultiBlocListener(
           listeners: [
+            BlocListener<ArticleCubit, ArticleState>(
+              listenWhen: (previous, current) =>
+                  previous is ArticleLoadingState &&
+                  current is! ArticleLoadingState,
+              listener: (context, state) => FlutterNativeSplash.remove(),
+            ),
             BlocListener<ArticleCubit, ArticleState>(
               listener: (context, state) => switch (state) {
                 ArticleLoadedState state =>

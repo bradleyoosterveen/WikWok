@@ -26,6 +26,7 @@ dependencies:
   share_plus: ^11.1.0
   flutter_animate: ^4.5.2
   rxdart: ^0.28.0
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:

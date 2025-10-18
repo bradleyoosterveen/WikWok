@@ -21,6 +21,9 @@ jobs:
         with:
           python-version: '3.14'
       - run: |
+          source _scripts/venv/bin/activate
+          pip install -r _scripts/requirements.txt
+      - run: |
           python _scripts/bump_version_in_pubspec.py --${{ inputs.part }}
 
   push:

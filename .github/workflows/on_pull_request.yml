@@ -20,6 +20,9 @@ jobs:
           version=$(python3 _scripts/get_flutter_sdk_version.py)
           echo "VERSION=$version" >> $GITHUB_OUTPUT
 
+      # echo the version for debug purposes
+      - run: echo ${{ steps.get.outputs.version }}
+
   test:
     needs: [ get-flutter-sdk-version ]
     runs-on: ubuntu-latest

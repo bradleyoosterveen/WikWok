@@ -16,20 +16,6 @@ jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.14'
-      - run: |
-          python -m venv _scripts/venv
-          source _scripts/venv/bin/activate
-          pip install -r _scripts/requirements.txt
-          python _scripts/bump_version_in_pubspec.py --${{ inputs.part }}
-
-  push:
-    needs: [ bump ]
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/create-github-app-token@v1
         id: app
         with:
@@ -39,6 +25,14 @@ jobs:
         with:
           token: ${{ steps.app.outputs.token }}
           fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - run: |
+          python -m venv _scripts/venv
+          source _scripts/venv/bin/activate
+          pip install -r _scripts/requirements.txt
+          python _scripts/bump_version_in_pubspec.py --${{ inputs.part }}
       - run: |
           git config user.name "WikWok Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"

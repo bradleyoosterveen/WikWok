@@ -43,5 +43,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Bump version adn build number"
+          git commit -m "Bump version and build number"
           git push origin HEAD:${GITHUB_REF#refs/heads/}

@@ -1,0 +1,49 @@
+name: Bump version and build number
+
+on:
+  workflow_dispatch:
+    inputs:
+      part:
+        description: "The part of the version to bump"
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - run: |
+          python _scripts/bump_version_in_pubspec.py --${{ inputs.part }}
+
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ steps.app.outputs.token }}
+          fetch-depth: 0
+      - run: |
+          git config user.name "WikWok Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add pubspec.yaml
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Bump version adn build number"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}

@@ -8,4 +8,4 @@ with open('.fvmrc', 'r') as file:
 
 version = data['flutter']
 
-set_github_output_value.set_multiline_output('VERSION', version)
+set_github_output_value.set_output('VERSION', version)

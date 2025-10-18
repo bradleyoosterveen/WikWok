@@ -5,23 +5,7 @@ on:
 
 jobs:
   get-flutter-sdk-version:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.get.outputs.version }}
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.14'
-
-      - id: get
-        run: |
-          version=$(python3 _scripts/get_flutter_sdk_version.py)
-          echo "version=$version" >> $GITHUB_OUTPUT
-
-      # echo the version for debug purposes
-      - run: echo ${{ steps.get.outputs.version }}
+    uses: ./.github/workflows/get-flutter-sdk-version.yml
 
   test:
     needs: [ get-flutter-sdk-version ]

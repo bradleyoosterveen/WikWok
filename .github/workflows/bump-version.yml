@@ -24,6 +24,7 @@ jobs:
           python _scripts/bump_version_in_pubspec.py --${{ inputs.part }}
 
   push:
+    needs: [ bump ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/create-github-app-token@v1

@@ -21,6 +21,7 @@ jobs:
         with:
           python-version: '3.14'
       - run: |
+          python -m venv _scripts/venv
           source _scripts/venv/bin/activate
           pip install -r _scripts/requirements.txt
       - run: |

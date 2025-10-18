@@ -18,6 +18,8 @@ jobs:
       - id: get
         run: python3 _scripts/get_flutter_sdk_version.py
 
+      - run: echo ${{ github.output.VERSION }}
+
   test:
     needs: [ get-flutter-sdk-version ]
     runs-on: ubuntu-latest

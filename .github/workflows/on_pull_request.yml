@@ -4,17 +4,30 @@ on:
   pull_request:
 
 jobs:
-  test:
+  get-flutter-sdk-version:
     runs-on: ubuntu-latest
-
+    outputs:
+      version: ${{ steps.get.outputs.VERSION }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - name: Setup Flutter SDK
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+
+      - id: get
+        run: python3 _scripts/get_flutter_sdk_version.py
+
+  test:
+    needs: [ get-flutter-sdk-version ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Flutter (${{ needs.get-flutter-sdk-version.version }})
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.35.5
+          flutter-version: ${{ needs.get-flutter-sdk-version.version }}
 
       - name: Install Flutter dependencies
         run: flutter pub get
@@ -23,16 +36,16 @@ jobs:
         run: flutter test lib --exclude-tags "integration"
 
   format:
+    needs: [ get-flutter-sdk-version ]
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Flutter SDK
+      - name: Setup Flutter (${{ needs.get-flutter-sdk-version.version }})
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.35.5
+          flutter-version: ${{ needs.get-flutter-sdk-version.version }}
 
       - name: Install Flutter dependencies
         run: flutter pub get

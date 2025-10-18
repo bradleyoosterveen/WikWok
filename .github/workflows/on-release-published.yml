@@ -38,7 +38,7 @@ jobs:
           flutter build apk --release --target-platform android-arm64
           mv build/app/outputs/flutter-apk/app-release.apk .
 
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v4
         with:
           name: apk
           path: app-release.apk
@@ -48,14 +48,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
 
       - run: |
           VERSION=${{ github.ref_name }}
           APP_VERSION=${VERSION#v}
           echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
 
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v5
         with:
           name: apk
 

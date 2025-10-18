@@ -8,72 +8,61 @@ permissions:
   contents: write
 
 jobs:
+  get-flutter-sdk-version:
+    uses: ./.github/workflows/flutter-sdk-version.yml
+
   build:
+    needs: [ get-flutter-sdk-version ]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v5
 
-      - name: Set APP_VERSION
-        run: |
-          VERSION=${{ github.ref_name }}
-          APP_VERSION=${VERSION#v}
-          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
-
-      - name: Setup Flutter SDK
+      - name: Setup Flutter (${{ needs.get-flutter-sdk-version.outputs.version }})
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.35.5
+          flutter-version: ${{ needs.get-flutter-sdk-version.outputs.version }}
 
-      - name: Install Flutter dependencies
-        run: flutter pub get
+      - run: flutter pub get
 
-      - name: Delete test files
-        run: find . -name '*_test.dart' -delete
+      - run: find . -name '*_test.dart' -delete
 
-      - name: Set up keystore
-        env:
+      - env:
           KEYSTORE_JKS: ${{ secrets.KEYSTORE_JKS }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
           echo $KEYSTORE_JKS | base64 -d > android/app/keystore.jks
           echo $KEY_PROPERTIES | base64 -d > android/key.properties
 
-
-      - name: '📦 Build apk'
-        run: |
+      - run: |
           flutter build apk --release --target-platform android-arm64
           mv build/app/outputs/flutter-apk/app-release.apk .
-          mv app-release.apk wikwok-${{ env.APP_VERSION }}.apk
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: wikwok-${{ env.APP_VERSION }}.apk
+          path: app-release.apk
 
   upload-to-release:
-    needs: build
+    needs: [ build ]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v5
 
-      - name: Set APP_VERSION
-        run: |
+      - run: |
           VERSION=${{ github.ref_name }}
           APP_VERSION=${VERSION#v}
           echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
 
-      - name: Download artifact
-        uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v5
         with:
           name: apk
 
-      - name: Upload APK to release
-        run: |
+      - run: |
+          mv app-release.apk wikwok-${{ env.APP_VERSION }}.apk
+
+      - run: |
           gh release upload ${{github.event.release.tag_name}} wikwok-${{ env.APP_VERSION }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,40 @@
+name: On pull request
+
+on:
+  pull_request:
+
+jobs:
+  get-flutter-sdk-version:
+    uses: ./.github/workflows/flutter-sdk-version.yml
+
+  test:
+    needs: [ get-flutter-sdk-version ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Flutter (${{ needs.get-flutter-sdk-version.outputs.version }})
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.get-flutter-sdk-version.outputs.version }}
+
+      - run: flutter pub get
+
+      - run: flutter test lib --exclude-tags "integration"
+
+  format:
+    needs: [ get-flutter-sdk-version ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Flutter (${{ needs.get-flutter-sdk-version.outputs.version }})
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ needs.get-flutter-sdk-version.outputs.version }}
+
+      - run: flutter pub get
+
+      - run: dart format -o none --set-exit-if-changed .
+
+      - run: dart fix --dry-run

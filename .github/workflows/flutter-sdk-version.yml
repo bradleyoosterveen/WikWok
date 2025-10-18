@@ -5,10 +5,10 @@ on:
     outputs:
       version:
         description: "The Flutter SDK version"
-        value: ${{ jobs.get-flutter-sdk-version.outputs.version }}
+        value: ${{ jobs.get.outputs.version }}
 
 jobs:
-  get-flutter-sdk-version:
+  get:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get.outputs.version }}

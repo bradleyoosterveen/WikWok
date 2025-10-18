@@ -5,7 +5,7 @@ on:
 
 jobs:
   get-flutter-sdk-version:
-    uses: ./.github/workflows/get-flutter-sdk-version.yml
+    uses: ./.github/workflows/flutter-sdk-version.yml
 
   test:
     needs: [ get-flutter-sdk-version ]

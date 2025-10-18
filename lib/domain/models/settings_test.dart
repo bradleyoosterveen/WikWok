@@ -9,7 +9,7 @@ void main() {
       test('should return correct default values', () {
         final settings = Settings.asDefault();
 
-        expect(settings.themeMode, ThemeMode.system);
+        expect(settings.themeMode, WThemeMode.system);
         expect(settings.articlePrefetchRange, ArticlePrefetchRange.short);
         expect(settings.shouldDownloadFullSizeImages,
             ShouldDownloadFullSizeImages.no);
@@ -20,7 +20,7 @@ void main() {
     group('fromMap()', () {
       test('should return the correct object', () {
         final map = {
-          'themeMode': ThemeMode.dark.index,
+          'themeMode': WThemeMode.dark.index,
           'articlePrefetchRange': ArticlePrefetchRange.medium.index,
           'shouldDownloadFullSizeImages':
               ShouldDownloadFullSizeImages.wifiOnly.index,
@@ -29,7 +29,7 @@ void main() {
 
         final settings = Settings.fromMap(map);
 
-        expect(settings.themeMode, ThemeMode.dark);
+        expect(settings.themeMode, WThemeMode.dark);
         expect(settings.articlePrefetchRange, ArticlePrefetchRange.medium);
         expect(settings.shouldDownloadFullSizeImages,
             ShouldDownloadFullSizeImages.wifiOnly);

@@ -7,7 +7,7 @@ jobs:
   get-flutter-sdk-version:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.get.outputs.VERSION }}
+      version: ${{ steps.get.outputs.version }}
     steps:
       - uses: actions/checkout@v5
 
@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Setup Flutter (${{ needs.get-flutter-sdk-version.version }})
+      - name: Setup Flutter (version ${{ needs.get-flutter-sdk-version.version }})
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ needs.get-flutter-sdk-version.version }}

@@ -16,9 +16,9 @@ jobs:
           python-version: '3.14'
 
       - id: get
-        run: python3 _scripts/get_flutter_sdk_version.py
-
-      - run: echo ${{ github.output.VERSION }}
+        run: |
+          version=$(python3 _scripts/get_flutter_sdk_version.py)
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
 
   test:
     needs: [ get-flutter-sdk-version ]

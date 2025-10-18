@@ -100,18 +100,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   label: const Text('Settings'),
                   divider: FItemDivider.full,
                   children: [
-                    _OptionTile<ThemeMode>(
+                    _OptionTile<WThemeMode>(
                       prefix: FIcons.sunMoon,
                       title: 'Theme',
                       initialValue: settings.themeMode,
-                      onChange: (ThemeMode value) =>
+                      onChange: (WThemeMode value) =>
                           settings.copyWith(themeMode: value),
-                      labelBuilder: (ThemeMode value) => switch (value) {
-                        ThemeMode.light => 'Light',
-                        ThemeMode.dark => 'Dark',
-                        ThemeMode.system => 'System',
+                      labelBuilder: (WThemeMode value) => switch (value) {
+                        WThemeMode.light => 'Light',
+                        WThemeMode.dark => 'Dark',
+                        WThemeMode.system => 'System',
+                        WThemeMode.pink => 'Pink',
                       },
-                      options: ThemeMode.values,
+                      options: WThemeMode.values,
                     ),
                     _OptionTile<Axis>(
                       prefix: FIcons.move3d,

@@ -1,7 +1,7 @@
 name: wikwok
 description: Doomscroll your way to endless knowledge.
 publish_to: none
-version: 2.0.0+26
+version: 1.5.5+25
 environment:
   sdk: ^3.5.1
 dependencies:

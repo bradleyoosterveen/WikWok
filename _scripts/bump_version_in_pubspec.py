@@ -29,8 +29,11 @@ def parse_version(version_str: str) -> tuple[int, int, int]:
     return major, minor, patch
 
 def update_version(path: str, part: Part) -> None:
-    with open(path, 'r') as file:
-        pubspec = yaml.safe_load(file)
+    try:
+        with open(path, 'r') as file:
+            pubspec = yaml.safe_load(file)
+    except Exception as e:
+        raise ValueError(f"File not found: {e}")
 
     try:
         current_version: str = pubspec['version']
@@ -61,11 +64,15 @@ def update_version(path: str, part: Part) -> None:
 
     pubspec['version'] = f"{new_version}+{build_number + 1}"
 
-    with open(path, 'w') as file:
-        yaml.dump(pubspec, file, sort_keys=False)
+    try:
+        with open(path, 'w') as file:
+            yaml.dump(pubspec, file, sort_keys=False)
+    except Exception as e:
+        raise ValueError(f"Could not write to file: {e}")
 
 def main() -> None:
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
+    parser.add_argument('--file', type=str, required=True)
     group: argparse._MutuallyExclusiveGroup = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--major', action='store_true')
     group.add_argument('--minor', action='store_true')
@@ -83,7 +90,11 @@ def main() -> None:
         print("No version part specified.")
         sys.exit(1)
 
-    update_version('pubspec.yaml', part)
+    try:
+        update_version(args.file, part)
+    except ValueError as e:
+        print(e)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

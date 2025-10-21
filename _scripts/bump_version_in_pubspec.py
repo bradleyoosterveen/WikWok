@@ -70,7 +70,7 @@ def update_version(path: str, part: Part) -> None:
     except Exception as e:
         raise ValueError(f"Could not write to file: {e}")
 
-def main() -> None:
+if __name__ == "__main__":
     parser: argparse.ArgumentParser = argparse.ArgumentParser()
     parser.add_argument('--file', type=str, required=True)
     group: argparse._MutuallyExclusiveGroup = parser.add_mutually_exclusive_group(required=True)
@@ -95,6 +95,3 @@ def main() -> None:
     except ValueError as e:
         print(e)
         sys.exit(1)
-
-if __name__ == "__main__":
-    main()

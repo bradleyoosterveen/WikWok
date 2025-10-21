@@ -19,5 +19,5 @@ jobs:
           python-version: '3.14'
       - id: get
         run: |
-          version=$(python3 _scripts/get_flutter_sdk_version.py)
+          version=$(python3 _scripts/get_flutter_sdk_version.py --file .fvmrc)
           echo "version=$version" >> $GITHUB_OUTPUT

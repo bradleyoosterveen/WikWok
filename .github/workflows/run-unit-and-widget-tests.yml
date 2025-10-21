@@ -1,8 +1,7 @@
-name: On schedule
+name: Run unit and widget tests
 
 on:
-  schedule:
-    - cron: '0 2 * * 1'
+  pull_request:
 
 jobs:
   get-flutter-sdk-version:
@@ -21,4 +20,4 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter test lib --tags "integration"
+      - run: flutter test lib --exclude-tags "integration"
